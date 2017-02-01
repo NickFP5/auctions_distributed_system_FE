@@ -5,6 +5,7 @@
  */
 package crudItem;
 
+import java.util.Date;
 import javax.ejb.Local;
 
 /**
@@ -13,5 +14,15 @@ import javax.ejb.Local;
  */
 @Local
 public interface crudItemBeanLocal {
+
+    public void modifyTitle(int id, String title);
+
+    public void modifyPrice(int id, float price);
+
+    public void modifyExpiringDate(int id, long d);
+
+    public void create(String title, float price, int seller_id, long expiring_date);
+
+    public void remove(int id);
     
 }

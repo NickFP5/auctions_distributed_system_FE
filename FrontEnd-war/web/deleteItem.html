@@ -6,11 +6,74 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Delete Auction Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Angular Material style sheet -->
+        <link rel="stylesheet" href="style/angular-material.min.css">
+        <link href="style/icon.css" rel="stylesheet">
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/angular-animate.min.js"></script>
+        <script src="js/lib/angular-aria.min.js"></script>
+        <script src="js/lib/angular-messages.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="js/lib/angular-material.min.js"></script>
+
+        <!-- Code Behind -->
+        <script src="js/app/auctionsApp.module.js"></script>
+        <script src="js/app/auctionsCrud.controller.js"></script>
+        <script src="js/app/auctionsApp.config.js"></script>
+
+
     </head>
-    <body>
-        <div>TODO write content</div>
+    <body ng-app="auctionsApp" style="width:100%">
+        <div ng-controller="auctionsCrudController as ctrl">
+            <div layout="column" class="no-scroll">
+
+                <md-toolbar class="md-whiteframe-3dp">
+                    <div class="md-toolbar-tools" >
+                        <h2>
+                            <span>Auctions Distributed System - Pagano & Torcetta</span>
+
+                        </h2>
+                        <span flex></span>
+                        <!--
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0" ng-click="ctrl.deleteItems($event)" class="md-icon-button" aria-label="Delete">
+                            <md-icon> delete </md-icon>
+                        </md-button>
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0 || ctrl.selectedItem.length > 1" ng-click="ctrl.updateItem($event)" class="md-icon-button" aria-label="Update">
+                            <md-icon> update </md-icon>
+                        </md-button> -->
+                    </div>
+                </md-toolbar>
+                <md-content class="no-scroll">
+                    <div>
+                        <div><h1>Delete Item</h1></div>
+                        <form novalidate class="simple-form"  name="editItemForm" style="width: 20%;">
+
+                            <md-input-container class="md-block">
+                                <label>Item id:</label>
+                                <input type="number" ng-model="ctrl.itemid" name="itemid" required=""  /><br />
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.price.$touched">
+                                    <div ng-show="editItemForm.itemid.$error.required">Item ID is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+
+                            <md-dialog-actions layout="row">
+                                <md-button ng-click="ctrl.deleteItem()"> 
+                                    Delete
+                                </md-button>
+                            </md-dialog-actions>
+
+                        </form>
+                    </div>
+                </md-content>
+            </div>
     </body>
 </html>

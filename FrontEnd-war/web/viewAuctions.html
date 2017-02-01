@@ -4,13 +4,113 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<html>
-    <head>
-        <title>TODO supply a title</title>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listing Auctions Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+        
+        <!-- Angular Material style sheet -->
+        <link rel="stylesheet" href="style/angular-material.min.css">
+        <link href="style/icon.css" rel="stylesheet">
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/angular-animate.min.js"></script>
+        <script src="js/lib/angular-aria.min.js"></script>
+        <script src="js/lib/angular-messages.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="js/lib/angular-material.min.js"></script>
+
+        <!-- Code Behind -->
+        <script src="js/app/auctionsApp.module.js"></script>
+        <script src="js/app/viewAuctions.controller.js"></script>
+        <script src="js/app/auctionsApp.config.js"></script>
+
+        <!-- App Styles -->
+        <link rel="stylesheet" href="style/style.css">
+
+</head>
+
+<body ng-app="auctionsApp" class="no-scroll">
+    <div ng-controller="viewAuctionsController as ctrl" class="no-scroll">
+        <div layout="column" class="no-scroll">
+            <md-toolbar class="md-whiteframe-3dp">
+                <div class="md-toolbar-tools" >
+                    <h2>
+                        <span>Auctions Distributed System - Pagano & Torcetta</span>
+            
+                    </h2>
+                    <span flex></span>
+                    <!--
+                    <md-button ng-disabled="ctrl.selectedItem.length == 0" ng-click="ctrl.deleteItems($event)" class="md-icon-button" aria-label="Delete">
+                        <md-icon> delete </md-icon>
+                    </md-button>
+                    <md-button ng-disabled="ctrl.selectedItem.length == 0 || ctrl.selectedItem.length > 1" ng-click="ctrl.updateItem($event)" class="md-icon-button" aria-label="Update">
+                        <md-icon> update </md-icon>
+                    </md-button> -->
+                </div>
+            </md-toolbar>
+            <md-content  class="md-padding scroll tab-content">
+                <md-list> 
+                       <md-list-item class="md-2-line" ng-repeat="item in ctrl.items" ng-click="ctrl.tr=true" >
+                           <!-- ng-style="{ 'background': (isHover ? '#999999' : 'transparent') }" ng-mouseenter="isHover = true;" ng-mouseleave="isHover = false;" -->
+               
+                         <!-- <md-button ng-click="" class="md-icon-button md-primary"  aria-label="Priority">
+                             <md-icon ng-style="{'font-size':'32px'}">shopping_cart</md-icon>
+                         </md-button> -->                       
+                         <md-card>
+                            <img src="img/auction_default_img_res.png" class="md-card-image" alt="image caption" style="max-height:100px; width: auto">
+                         </md-card>
+                         <div class="md-list-item-text" layout="column">
+                             <h2> <b>Title</b>: {{item.title}} </h2>
+                         </div>
+                           
+                         <div class="md-list-item-text" layout="column">
+                             <p > <b>Price</b>: {{item.price}}</p>
+                             <p > <b>Deadline</b>: {{item.expiring_date | date: "dd-MM-yyyy"}} 
+                         </div>
+                           
+                         <div class="md-list-item-text" layout="column">
+                             <p > <b>ID</b>: {{item.id}} </p>
+                             <p > <b>Seller ID</b>:{{item.seller_id}}</p>
+                         </div>
+                           
+                         <md-button ng-click="" class="md-icon-button  md-primary" >
+                             <md-icon ng-style="{'font-size':'32px'}">visibility</md-icon>
+                         </md-button>
+                           
+                         <!-- <md-checkbox ng-model="item.done" ng-change="customListCtrl.checkStateChanged(item)" class="md-primary md-align-top-right">
+                         </md-checkbox> -->
+                         <md-divider></md-divider>
+                       </md-list-item>
+                   </md-list>
+                <!-- <md-tabs md-dynamic-height md-border-bottom class="no-scroll">
+                    <md-tab label="Todo">
+                        <custom-list items="ctrl.items" selected-item="ctrl.selectedItem" filter-function="ctrl.notDone"></custom-list>
+                    </md-tab>
+                    <md-tab label="Done">
+                        <custom-list items="ctrl.items" selected-item="ctrl.selectedItem" filter-function="ctrl.done"></custom-list>
+                    </md-tab>
+                    <md-tab label="All">
+                        <custom-list items="ctrl.items" selected-item="ctrl.selectedItem" filter-function="ctrl.all"></custom-list>
+                    </md-tab>
+
+                    <md-tab label="Grid view">
+                        <custom-grid-list items="ctrl.items" selected-item="ctrl.selectedItem" filter-function="ctrl.all"></custom-list>
+                    </md-tab>
+
+                </md-tabs> -->
+                <!-- <md-button class="md-fab md-primary add-button" aria-label="Add Todo" ng-click="ctrl.addTask($event)" style="background-color:#228b22">
+                    <md-icon>add</md-icon>
+                </md-button> -->
+            </md-content>
+        </div>
+        </div>
+</body>
+
 </html>

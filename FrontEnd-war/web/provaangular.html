@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>New Auction Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Angular Material style sheet -->
+        <link rel="stylesheet" href="style/angular-material.min.css">
+        <link href="style/icon.css" rel="stylesheet">
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/angular-animate.min.js"></script>
+        <script src="js/lib/angular-aria.min.js"></script>
+        <script src="js/lib/angular-messages.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="js/lib/angular-material.min.js"></script>
+
+        <!-- Code Behind -->
+        <script src="js/app/auctionsApp.module.js"></script>
+        <script src="js/app/auctionReview.controller.js"></script>
+        <script src="js/app/auctionsApp.config.js"></script>
+        
+        <script src="js/extlib/countdown.js"></script>
+
+
+    </head>
+    <body ng-app="auctionsApp" style="width:100%">
+        <div ng-controller="auctionReviewController as ctrl">
+            <div layout="column" class="no-scroll">
+
+                <md-toolbar class="md-whiteframe-3dp">
+                    <div class="md-toolbar-tools" >
+                        <h2>
+                            <span>Auctions Distributed System - Pagano & Torcetta</span>
+
+                        </h2>
+                        <span flex></span>
+                        <!--
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0" ng-click="ctrl.deleteItems($event)" class="md-icon-button" aria-label="Delete">
+                            <md-icon> delete </md-icon>
+                        </md-button>
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0 || ctrl.selectedItem.length > 1" ng-click="ctrl.updateItem($event)" class="md-icon-button" aria-label="Update">
+                            <md-icon> update </md-icon>
+                        </md-button> -->
+                    </div>
+                </md-toolbar>
+                <md-content class="no-scroll">
+                    <div layout="column" layout-align="center center">
+                        <div layout="row" >
+                            <md-card>
+                                <img src="img/auction_default_img_res.png" class="md-card-image" alt="image caption">
+                            </md-card>
+                            <div layout="column">
+                                
+                                <div><h2>Item: <b>{{ctrl.item.title}}</b></h2></div>
+                                <p><b>Minimum price:</b> {{ctrl.item.price}}</p>
+                                <p><b>Expiration date:</b> {{ctrl.item.millis | date: "dd-MM-yyyy hh:mm:ss"}}</p>
+                                <p> <b>Seller ID:</b> {{ctrl.item.seller_id}}   /   <b>Item ID:</b> {{ctrl.item.id}}</p>
+                                
+                            </div>
+                        </div>
+                        <div layout="column">
+                            <br>
+                            <div>
+                                <h3>Remaining time: </h3>
+                                <h2><b><span style="color:red">{{ctrl.cd.toString()}}</span></b></h2>
+                            </div>
+                            <div>
+                                <h2>Send your offer!</h2>
+                                <form novalidate class="simple-form"  name="offerForm" style="width: 40%;" >
+
+                                    <md-input-container class="md-block">
+                                        <label>Your offer:</label>
+                                        <input type="number" ng-model="ctrl.offer" name="offer" required=""  /><br />
+                                        <br />
+                                        <div ng-show="offerForm.$submitted || offerForm.offer.$touched">
+                                            <div ng-show="offerForm.offer.$error.required">Offer is a required field.</div>
+                                        </div>
+                                    </md-input-container>
+
+
+                                    <md-dialog-actions layout="row">
+                                        <md-button ng-click="ctrl.createItem()"> 
+                                            Send offer
+                                        </md-button>
+                                    </md-dialog-actions>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </div>
+        </div>
+    </body>
+</html>

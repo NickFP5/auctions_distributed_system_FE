@@ -41,5 +41,22 @@
         <delete dir="${build.generated.dir}/jax-wsCache/userWebService"/>
         <delete dir="${build.generated.sources.dir}/jax-ws/user"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-userWebService"/>
+    <target name="wsimport-client-itemWebService" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/itemWebService"/>
+        <property name="wsdl-itemWebService" location="${meta.inf}/xml-resources/web-service-references/itemWebService/wsdl/localhost_8080/ReplicaManager-war/itemWebService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/itemWebService" destdir="${build.generated.dir}/jax-wsCache/itemWebService" wsdl="${wsdl-itemWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/ReplicaManager-war/itemWebService?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-itemWebService}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/itemWebService"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/itemWebService">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-itemWebService" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/itemWebService"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/items"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-userWebService, wsimport-client-itemWebService"/>
 </project>

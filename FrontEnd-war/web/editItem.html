@@ -6,11 +6,126 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Edit Auction Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Angular Material style sheet -->
+        <link rel="stylesheet" href="style/angular-material.min.css">
+        <link href="style/icon.css" rel="stylesheet">
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/angular-animate.min.js"></script>
+        <script src="js/lib/angular-aria.min.js"></script>
+        <script src="js/lib/angular-messages.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="js/lib/angular-material.min.js"></script>
+
+        <!-- Code Behind -->
+        <script src="js/app/auctionsApp.module.js"></script>
+        <script src="js/app/auctionsCrud.controller.js"></script>
+        <script src="js/app/auctionsApp.config.js"></script>
+
+
     </head>
-    <body>
-        <div>TODO write content</div>
+    <body ng-app="auctionsApp" style="width:100%">
+        <div ng-controller="auctionsCrudController as ctrl">
+            <div layout="column" class="no-scroll">
+
+                <md-toolbar class="md-whiteframe-3dp">
+                    <div class="md-toolbar-tools" >
+                        <h2>
+                            <span>Auctions Distributed System - Pagano & Torcetta</span>
+
+                        </h2>
+                        <span flex></span>
+                        <!--
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0" ng-click="ctrl.deleteItems($event)" class="md-icon-button" aria-label="Delete">
+                            <md-icon> delete </md-icon>
+                        </md-button>
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0 || ctrl.selectedItem.length > 1" ng-click="ctrl.updateItem($event)" class="md-icon-button" aria-label="Update">
+                            <md-icon> update </md-icon>
+                        </md-button> -->
+                    </div>
+                </md-toolbar>
+                <md-content class="no-scroll">
+                    <div>
+                        <div><h1>Edit Item</h1></div>
+                        <form novalidate class="simple-form"  name="editItemForm" style="width: 20%;">
+
+                            <md-input-container class="md-block">
+                                <label>Item id:</label>
+                                <input type="number" ng-model="ctrl.itemid" name="itemid" required=""  /><br />
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.price.$touched">
+                                    <div ng-show="editItemForm.itemid.$error.required">Item ID is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+
+                            <md-input-container class="md-block" ng-show="ctrl.selectedEditCrit == 1">
+                                <label>Title:</label>
+                                <input type="text" ng-model="ctrl.title" name="title" required="" /><br />
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.title.$touched">
+                                    <div ng-show="editItemForm.title.$error.required">Title is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+                            
+                            <md-input-container class="md-block"  ng-show="ctrl.selectedEditCrit == 3">
+                                <label>Expiring date:</label>
+                                <md-datepicker ng-model="ctrl.expdate" md-placeholder="Enter auction deadline" name="expdate" required=""></md-datepicker>
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.expdate.$touched">
+                                    <div ng-show="editItemForm.expdate.$error.required">Expiring date is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+                            <md-input-container class="md-block"  ng-show="ctrl.selectedEditCrit == 3">
+                                <label>Expiring time:</label>
+                                <input type="time" id="exampleInput" name="input" ng-model="ctrl.exptime" placeholder="HH:mm:ss" min="00:00:00" max="23:59:59" required />
+                            </md-input-container>
+                            <br />
+
+                            <md-input-container class="md-block"  ng-show="ctrl.selectedEditCrit == 2">
+                                <label>Minimum price:</label>
+                                <input type="number" ng-model="ctrl.price" name="price" required=""  /><br />
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.price.$touched">
+                                    <div ng-show="editItemForm.price.$error.required">Minimum price is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+
+                            <md-input-container class="md-block">
+                                <label>Edit by:</label>
+                                <md-select ng-model="ctrl.selectedEditCrit" placeholder="Select a field to edit" name="editcrit" required="">
+                                    <md-option ng-value="crit.value" ng-repeat="crit in ctrl.editby">
+                                        {{ crit.title}}
+                                    </md-option>
+                                </md-select>
+                                <br />
+                                <div ng-show="editItemForm.$submitted || editItemForm.tPrio.$touched">
+                                    <div ng-show="editItemForm.editcrit.$error.required">Editing mode is a required field.</div>
+                                </div>
+                            </md-input-container>
+                            <br />
+
+
+                            <md-dialog-actions layout="row">
+                                <md-button ng-click="ctrl.editItem()"> 
+                                    Save
+                                </md-button>
+                            </md-dialog-actions>
+
+                        </form>
+
+                    </div>
+                </md-content>
+
+            </div>
     </body>
 </html>
