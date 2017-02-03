@@ -6,6 +6,7 @@
 package offer;
 
 import javax.ejb.Stateless;
+import javax.xml.ws.WebServiceRef;
 
 /**
  *
@@ -14,5 +15,45 @@ import javax.ejb.Stateless;
 @Stateless
 public class offerBean implements offerBeanLocal {
 
-    //bean che si occupa di gestire le proposte di offerta
+    @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl")
+    private OfferWebService_Service service;
+    
+    
+    
+    @Override
+    public String offerPrice(int itemId, float requestedPrice, int userId){
+        
+       // return "ciao";
+        return offer(itemId, requestedPrice,userId);
+    }
+    
+    
+    @Override
+    public String findTransaction(int itemId){
+        
+       // return "ciao";
+        return getTransaction(itemId);
+    }
+    
+    
+    
+
+    private String offer(int itemId, float requestedPrice, int userId) {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        System.out.println("Dentro offer di offerBean FRONTEND");
+        offer.OfferWebService port = service.getOfferWebServicePort();
+        return port.offer(itemId, requestedPrice, userId);
+    }
+
+
+    private String getTransaction(int itemId) {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        offer.OfferWebService port = service.getOfferWebServicePort();
+        return port.getTransaction(itemId);
+    }
+
+    
+    
 }

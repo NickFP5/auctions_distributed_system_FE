@@ -15,22 +15,25 @@
 
     function auctionReviewController($q, $timeout) {
         var vm = this;
-        var createUri = "ws://localhost:8080/FrontEnd-war/createItem";
+        var OfferUri = "ws://localhost:8080/FrontEnd-war/offer";
         var output;
         var websocket; // = new WebSocket(wsUri);
         
-        vm.deleteItem = deleteItem;
+        vm.offerPrice = offerPrice;
         
         vm.item = {
-            id: 157,
-            title: "Item 157",
-            price: 157.7,
-            seller_id: 1,
-            millis: Date.now()
+            id: sessionStorage.getItem("item_id"),
+            title: sessionStorage.getItem("item_title"),
+            price: sessionStorage.getItem("item_price"),
+            seller_id: sessionStorage.getItem("item_seller_id"),
+            millis: sessionStorage.getItem("item_expiring_date")
         };
         
-        vm.cd = countdown(null, new Date(2017, 2, 1, 13, 59, 33));
+        vm.cd = countdown(null, vm.item.millis);
         vm.countdown = vm.cd.toString();
+        var uriOffer = OfferUri +"/"+ vm.item.id.toString();
+        console.log(uriOffer);
+        connect(uriOffer);
         
         vm.executeAsync = function() {
             asyncAction().then(function(response) {
@@ -45,7 +48,7 @@
 
             $timeout(function() {
                 d.resolve("Executed");
-                vm.cd = countdown(null, new Date(2017, 2, 1, 13, 59, 33));
+                vm.cd = countdown(null, vm.item.millis);
                 vm.countdown = vm.cd.toString();
             }, 1000);
 
@@ -54,14 +57,18 @@
         
         vm.executeAsync();
         
-        function deleteItem() {
-            var deleteinfo = {
-                id: vm.itemid
+        function offerPrice() {
+            var offerinfo = {
+                item_id:  vm.item.id,
+                requestedPrice: vm.offer,
+                user_id: sessionStorage.getItem('user_id')
             };
-            console.log(JSON.stringify(deleteinfo));
-            connect(createUri).then(function(){
-                websocket.send(JSON.stringify(deleteinfo));
-            }); 
+            console.log(JSON.stringify(offerinfo));
+            //var uriOffer = OfferUri +"/"+ vm.item.id.toString();
+            //console.log(uriOffer);
+            //connect(uriOffer).then(function(){
+            websocket.send(JSON.stringify(offerinfo));
+            //}); 
         }
         
         
@@ -69,7 +76,9 @@
             var d = $q.defer();
             websocket = new WebSocket(uri);
             websocket.onmessage = function(message) {
-                console.log("Message received: " + message); 
+                console.log("Message received: " + message.data); 
+                vm.transaction = JSON.parse(message.data);
+                
             };
             websocket.onopen = function(){  
                 console.log("Socket has been opened!");

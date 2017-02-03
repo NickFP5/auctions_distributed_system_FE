@@ -36,7 +36,7 @@ public class login {
     @OnMessage
     public String onMessage(String message, Session session, EndpointConfig config) {
         
-        boolean registered = false;
+        int user_id;
         
         System.out.println("Ricevuto: " + message);
         
@@ -49,7 +49,7 @@ public class login {
         User u = new User();
         u.setEmail(email);
         u.setPassword(password);
-        registered = loginBean.check(u);
+        user_id = loginBean.check(u);
         
         /*
         if( session.isOpen() && registered ){
@@ -73,7 +73,7 @@ public class login {
       entitymanager.getTransaction( ).begin( );
       u = entitymanager.;*/
         
-        if(registered) return "OK";
+        if(user_id > 0) return String.valueOf(user_id);
         else return "ERROR(";
     }
     

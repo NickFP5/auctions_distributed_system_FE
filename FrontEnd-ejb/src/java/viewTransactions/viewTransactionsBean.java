@@ -5,9 +5,9 @@
  */
 package viewTransactions;
 
-import items.ItemWebService_Service;
 import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
+import transaction.TransactionWebService_Service;
 
 /**
  *
@@ -15,21 +15,31 @@ import javax.xml.ws.WebServiceRef;
  */
 @Stateless
 public class viewTransactionsBean implements viewTransactionsBeanLocal {
-    @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/itemWebService.wsdl")
-    private ItemWebService_Service service;
-    
-    
-    public String viewLiveAuctions(){
-        return selectLive();
-    }
 
-    private String selectLive() {
-        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
-        // If the calling of port operations may lead to race condition some synchronization is required.
-        items.ItemWebService port = service.getItemWebServicePort();
-        return port.selectLive();
+    @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/transactionWebService.wsdl")
+    private TransactionWebService_Service service;
+
+
+    
+    @Override
+    public String viewTransactions(){
+        System.out.println("Dentro selectTransactions di viewTransactionbBean");
+       // return "ciao";
+        return selectTransactions();
     }
+    
+
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
+    private String selectTransactions() {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        transaction.TransactionWebService port = service.getTransactionWebServicePort();
+        return port.selectTransactions();
+    }
+
+    
+    
 }

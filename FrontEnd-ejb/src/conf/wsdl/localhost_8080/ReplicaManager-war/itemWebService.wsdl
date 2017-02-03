@@ -16,12 +16,6 @@
 <message name="insertResponse">
 <part name="parameters" element="tns:insertResponse"/>
 </message>
-<message name="updateExpiringDate">
-<part name="parameters" element="tns:updateExpiringDate"/>
-</message>
-<message name="updateExpiringDateResponse">
-<part name="parameters" element="tns:updateExpiringDateResponse"/>
-</message>
 <message name="selectLive">
 <part name="parameters" element="tns:selectLive"/>
 </message>
@@ -33,6 +27,12 @@
 </message>
 <message name="updatePriceResponse">
 <part name="parameters" element="tns:updatePriceResponse"/>
+</message>
+<message name="updateExpiringDate">
+<part name="parameters" element="tns:updateExpiringDate"/>
+</message>
+<message name="updateExpiringDateResponse">
+<part name="parameters" element="tns:updateExpiringDateResponse"/>
 </message>
 <message name="updateTitle">
 <part name="parameters" element="tns:updateTitle"/>
@@ -49,10 +49,6 @@
 <input wsam:Action="http://items/itemWebService/insertRequest" message="tns:insert"/>
 <output wsam:Action="http://items/itemWebService/insertResponse" message="tns:insertResponse"/>
 </operation>
-<operation name="updateExpiringDate">
-<input wsam:Action="http://items/itemWebService/updateExpiringDateRequest" message="tns:updateExpiringDate"/>
-<output wsam:Action="http://items/itemWebService/updateExpiringDateResponse" message="tns:updateExpiringDateResponse"/>
-</operation>
 <operation name="selectLive">
 <input wsam:Action="http://items/itemWebService/selectLiveRequest" message="tns:selectLive"/>
 <output wsam:Action="http://items/itemWebService/selectLiveResponse" message="tns:selectLiveResponse"/>
@@ -60,6 +56,10 @@
 <operation name="updatePrice">
 <input wsam:Action="http://items/itemWebService/updatePriceRequest" message="tns:updatePrice"/>
 <output wsam:Action="http://items/itemWebService/updatePriceResponse" message="tns:updatePriceResponse"/>
+</operation>
+<operation name="updateExpiringDate">
+<input wsam:Action="http://items/itemWebService/updateExpiringDateRequest" message="tns:updateExpiringDate"/>
+<output wsam:Action="http://items/itemWebService/updateExpiringDateResponse" message="tns:updateExpiringDateResponse"/>
 </operation>
 <operation name="updateTitle">
 <input wsam:Action="http://items/itemWebService/updateTitleRequest" message="tns:updateTitle"/>
@@ -86,15 +86,6 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="updateExpiringDate">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
 <operation name="selectLive">
 <soap:operation soapAction=""/>
 <input>
@@ -105,6 +96,15 @@
 </output>
 </operation>
 <operation name="updatePrice">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="updateExpiringDate">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

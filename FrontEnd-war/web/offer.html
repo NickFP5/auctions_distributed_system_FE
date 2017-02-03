@@ -74,9 +74,16 @@ and open the template in the editor.
                                 <h2><b><span style="color:red">{{ctrl.cd.toString()}}</span></b></h2>
                             </div>
                             <div>
+                            <div>
+                                <h3>Last offer: </h3>
+                                <h2><b><span style="color:green" ng-if="ctrl.transaction.exist == true ">{{ctrl.transaction.amount}}, at: {{ctrl.transaction.timestamp | date: "dd-MM-yyyy hh:mm:ss"}}</span></b></h2>
+                                <h2><b><span style="color:red" ng-if="ctrl.transaction.exist != true ">Nessuna offerta per questo item</span></b></h2>
+
+                            </div>    
+                                
                                 <h2>Send your offer!</h2>
                                 <form novalidate class="simple-form"  name="offerForm" style="width: 40%;" >
-
+                      
                                     <md-input-container class="md-block">
                                         <label>Your offer:</label>
                                         <input type="number" ng-model="ctrl.offer" name="offer" required=""  /><br />
@@ -85,10 +92,11 @@ and open the template in the editor.
                                             <div ng-show="offerForm.offer.$error.required">Offer is a required field.</div>
                                         </div>
                                     </md-input-container>
-
-
+                                    
+                                    
+                                        
                                     <md-dialog-actions layout="row">
-                                        <md-button ng-click="ctrl.createItem()"> 
+                                        <md-button ng-click="ctrl.offerPrice()"> 
                                             Send offer
                                         </md-button>
                                     </md-dialog-actions>

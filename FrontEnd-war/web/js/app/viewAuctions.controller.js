@@ -13,7 +13,7 @@
         .controller('viewAuctionsController', viewAuctionsController);
 
 
-    function viewAuctionsController($q) {
+    function viewAuctionsController($q,$window) {
         var vm = this;
         var viewUri = "ws://localhost:8080/FrontEnd-war/viewAuctions";
         var output;
@@ -22,6 +22,21 @@
         
         vm.items = [];
         vm.itemsraw = null;
+        
+        vm.goToOffer = goToOffer;
+        
+        
+        
+        
+        function goToOffer(item) {
+            sessionStorage.setItem('item_id', item.id);
+            sessionStorage.setItem('item_title', item.title);
+            sessionStorage.setItem('item_price', item.price);
+            sessionStorage.setItem('item_seller_id', item.seller_id);
+            sessionStorage.setItem('item_expiring_date', item.expiring_date);
+            $window.location.href = '/FrontEnd-war/offer.html';
+        }
+        
         
         connect(viewUri).then(function(){
             console.log("promise resolved")

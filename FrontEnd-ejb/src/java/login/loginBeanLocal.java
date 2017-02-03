@@ -14,5 +14,5 @@ import resources.User;
  */
 @Local
 public interface loginBeanLocal {
-    public boolean check(User u);
+    public int check(User u);
 }

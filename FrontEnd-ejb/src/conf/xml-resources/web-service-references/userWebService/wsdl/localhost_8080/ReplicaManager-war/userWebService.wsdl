@@ -4,6 +4,12 @@
 <xsd:import namespace="http://user/" schemaLocation="http://localhost:8080/ReplicaManager-war/userWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="insert">
+<part name="parameters" element="tns:insert"/>
+</message>
+<message name="insertResponse">
+<part name="parameters" element="tns:insertResponse"/>
+</message>
 <message name="select">
 <part name="parameters" element="tns:select"/>
 </message>
@@ -11,6 +17,10 @@
 <part name="parameters" element="tns:selectResponse"/>
 </message>
 <portType name="userWebService">
+<operation name="insert">
+<input wsam:Action="http://user/userWebService/insertRequest" message="tns:insert"/>
+<output wsam:Action="http://user/userWebService/insertResponse" message="tns:insertResponse"/>
+</operation>
 <operation name="select">
 <input wsam:Action="http://user/userWebService/selectRequest" message="tns:select"/>
 <output wsam:Action="http://user/userWebService/selectResponse" message="tns:selectResponse"/>
@@ -18,6 +28,15 @@
 </portType>
 <binding name="userWebServicePortBinding" type="tns:userWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="insert">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="select">
 <soap:operation soapAction=""/>
 <input>

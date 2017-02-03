@@ -13,5 +13,5 @@ import javax.ejb.Local;
  */
 @Local
 public interface viewTransactionsBeanLocal {
-    
+       public String viewTransactions();
 }

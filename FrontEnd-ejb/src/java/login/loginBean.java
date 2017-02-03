@@ -32,7 +32,7 @@ public class loginBean implements loginBeanLocal {
     
     
     @Override
-    public boolean check(User u){
+    public int check(User u){
         // invocazione al web service delle repliche per verificare se l'utente è presente o meno
         
         System.out.println("Dentro check loginBean frontend");
@@ -40,12 +40,12 @@ public class loginBean implements loginBeanLocal {
         
         JsonObject jo = Json.createReader(new StringReader(result)).readObject();
         String email = (String) jo.getString("email");
-         
+        int user_id = jo.getInt("id");
         System.out.println("Valore email: " + email);
         
-        if(email != null) return true;
+        if(email != null) return user_id;
         
-        else return false;
+        else return -1;
         //return false;
     }
 
