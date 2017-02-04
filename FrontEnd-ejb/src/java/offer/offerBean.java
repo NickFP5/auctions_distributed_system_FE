@@ -7,6 +7,7 @@ package offer;
 
 import javax.ejb.Stateless;
 import javax.xml.ws.WebServiceRef;
+import totalOrderReplicazione.totalOrderMulticastSender;
 
 /**
  *
@@ -21,10 +22,11 @@ public class offerBean implements offerBeanLocal {
     
     
     @Override
-    public String offerPrice(int itemId, float requestedPrice, int userId){
-        
+    //public String offerPrice(int itemId, float requestedPrice, int userId){
+    public void offerPrice(String offerMsg){    
+        totalOrderMulticastSender.getInstance().send(1, offerMsg);
        // return "ciao";
-        return offer(itemId, requestedPrice,userId);
+        
     }
     
     
@@ -36,15 +38,7 @@ public class offerBean implements offerBeanLocal {
     }
     
     
-    
-
-    private String offer(int itemId, float requestedPrice, int userId) {
-        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
-        // If the calling of port operations may lead to race condition some synchronization is required.
-        System.out.println("Dentro offer di offerBean FRONTEND");
-        offer.OfferWebService port = service.getOfferWebServicePort();
-        return port.offer(itemId, requestedPrice, userId);
-    }
+   
 
 
     private String getTransaction(int itemId) {

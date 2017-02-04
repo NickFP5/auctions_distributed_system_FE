@@ -33,10 +33,12 @@ public class offer {
     offerBeanLocal offerBean = lookupofferBeanLocal();
 
     @OnMessage
-    public String onMessage(String message) {
+    public void onMessage(String message) {
 
+        
         System.out.println("Dentro onMessage offer websocket FRONTEND");
         System.out.println("MSG RICEVUTO-->" + message);
+        /*
         JsonObject jo = Json.createReader(new StringReader(message)).readObject();
 
         String item_id_s =  jo.getString("item_id");
@@ -47,8 +49,10 @@ public class offer {
         //RICHIAMARE BEAN PER INOLTRARE LA RICHIESTA AL BACKEND
         System.out.println("Sto inviando item_id-->" + item_id + " reqPrice -->" + requestedPrice + " user_id--->" + user_id);
         //offerBean.offerPrice(item_id, requestedPrice, user_id);
-
-        return offerBean.offerPrice(item_id, requestedPrice, user_id);
+        */
+        offerBean.offerPrice(message);
+        
+        
     }
 
     @OnClose

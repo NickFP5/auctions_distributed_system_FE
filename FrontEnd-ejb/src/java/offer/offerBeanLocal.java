@@ -13,7 +13,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface offerBeanLocal {
-    public String offerPrice(int itemId, float requestedPrice, int userId);
+    public void offerPrice(String offerMsg);
 
 
     public String findTransaction(int itemId);
