@@ -15,6 +15,8 @@
             <included-library dirs="200">file.reference.json-lib-2.4-jdk15.jar</included-library>
             <included-library dirs="200">file.reference.TotalOrderIsis.jar</included-library>
             <included-library dirs="200">file.reference.gson-2.8.0.jar</included-library>
+            <included-library dirs="200">file.reference.gson-2.8.0.jar-1</included-library>
+            <included-library dirs="200">file.reference.TotalOrderIsis.jar-1</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

@@ -19,7 +19,8 @@ public class totalOrderMulticastSender {
     private static totalOrderMulticastSender _instance = new totalOrderMulticastSender();
     private Map<Integer, List<TotalOrderMulticastMessage>> holdbackQueueTable;
     private Map<Integer, Integer> groupLastSequence;
-    private Map<Integer, Map<Integer, List<Integer>>> groupProposalSequence;
+    //private Map<Integer, Map<Integer, List<Integer>>> groupProposalSequence;
+    private Map<Integer, Map<Integer, Map<Integer,Integer>>> groupProposalSequence;
     private Map<Integer, Integer> groupMessageCounter;
     private Map<Integer, Map<Integer, TotalOrderMulticastMessage>> bufferMessageTable;
     //private BasicMulticast basicMulticast;
@@ -27,6 +28,9 @@ public class totalOrderMulticastSender {
     private List<String> deliveryQueue;
     private int  myport, myid, mygroup, mygroupsize;
     private String myname, myip;
+    
+    private HashSet<Integer> alive;
+    
     
 
     private totalOrderMulticastSender(){
@@ -74,10 +78,15 @@ public class totalOrderMulticastSender {
             groupLastSequence = new Hashtable<Integer, Integer>();
             //basicMulticast = BasicMulticast.getInstance();
             bufferMessageTable = new Hashtable<Integer, Map<Integer, TotalOrderMulticastMessage>>();
-            groupProposalSequence = new Hashtable<Integer, Map<Integer, List<Integer>>>();
+            //groupProposalSequence = new Hashtable<Integer, Map<Integer, List<Integer>>>();
+            groupProposalSequence = new Hashtable<Integer, Map<Integer, Map<Integer, Integer>>>();
             groupMessageCounter = new Hashtable<Integer, Integer>();
             _mutex = new Object();
             deliveryQueue = new LinkedList<String>();
+            
+            // DA MODIFICARE CON IL DEPLOY
+            alive = new HashSet<Integer>();
+            alive.add(2);
         
     }
 
@@ -122,7 +131,8 @@ public class totalOrderMulticastSender {
 
     public void basicMulticast(String msg) {
         System.out.println("Invio il messaggio " + msg + " , sono il SENDER BEAN");
-        //per ognuno dei replicaManager
+        //per ognuno dei replicaManager non sospetto
+        
         offer(msg);
     }
 
@@ -177,26 +187,35 @@ public class totalOrderMulticastSender {
                 Collections.sort(priorityQueue);
             } else if (messageType == TotalOrderMessageType.PROPOSAL) {
                 System.out.println("TotalOrderSender (id" + myid + ") received PROPOSAL msg. ");
-                List<Integer> cachedSequence;
-                Map<Integer, List<Integer>> cachedSequenceTable;
+                Map<Integer,Integer> cachedSequence;
+                Map<Integer, Map<Integer,Integer>> cachedSequenceTable;
                 int messageId = tomm.getMessageId();
                 int proposeSequence = tomm.getSequence();
                 if (groupProposalSequence.containsKey(groupId) == false) {
-                    groupProposalSequence.put(groupId, new Hashtable<Integer, List<Integer>>());
+                    groupProposalSequence.put(groupId, new Hashtable<Integer, Map<Integer,Integer>>());
                 }
                 cachedSequenceTable = groupProposalSequence.get(groupId);
                 if (cachedSequenceTable.containsKey(messageId) == false) {
-                    cachedSequenceTable.put(messageId, new LinkedList<Integer>());
+                    cachedSequenceTable.put(messageId, new HashMap<Integer,Integer>());
                 }
 
                 cachedSequence = cachedSequenceTable.get(messageId);
-                cachedSequence.add(proposeSequence);
+                cachedSequence.put(tomm.getSource(),proposeSequence);
                 //System.out.println("receive proposed message: " + tomm);
      //   ------>        if (cachedSequence.size() == MemberIndexer.getInstance().getGroupSize(groupId)) {
-            if (cachedSequence.size() == mygroupsize - 1) {
+            boolean result = isReadyToSendFinal(cachedSequence);
+     
+                
+            //if (cachedSequence.size() == mygroupsize - 1 ) {
+            if(result){
                     System.out.println("TotalOrderSender (id" + myid + ") collected all PROPOSAL msg. Sending FINAL msg to group.");
                     int finalSequence = 0;
-                    finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
+                  //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
+                    int p;
+                    for(Map.Entry<Integer,Integer> entry : cachedSequence.entrySet()){
+                        p = entry.getValue();
+                        if(finalSequence < p) finalSequence = p;
+                    }
                     TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(groupId).get(messageId);
                     finalMessage.setSequence(finalSequence);
                     finalMessage.setMessageType(TotalOrderMessageType.FINAL);
@@ -204,7 +223,13 @@ public class totalOrderMulticastSender {
                     bufferMessageTable.get(groupId).remove(finalMessage);
                     groupLastSequence.put(groupId, finalSequence);
                     // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
+                    
+                    
+                    cachedSequenceTable.remove(messageId);
+                    
                     basicMulticast(finalMessage.toString());
+                    
+                    
                     
 
                 }
@@ -249,6 +274,68 @@ public class totalOrderMulticastSender {
             }
         //} //fine synchronized
     }
+    
+    
+    public void addToAlive(int p){
+        alive.add(p);
+    }
+    
+    public void removeToAlive(int p){
+        System.out.println("Rimuovo un RM sospetto");
+        alive.remove(p);
+        boolean result;
+        Map<Integer,Integer> cachedSequence;
+        Map<Integer, Map<Integer, Integer>> cachedSequenceTable = groupProposalSequence.get(1);
+        for(Map.Entry<Integer, Map<Integer,Integer>> entry : cachedSequenceTable.entrySet()){
+            cachedSequence = entry.getValue();
+            result = isReadyToSendFinal(cachedSequence);
+            if(result){
+                int finalSequence = 0;
+                  //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
+                    int pa;
+                    for(Map.Entry<Integer,Integer> entry2 : cachedSequence.entrySet()){
+                        pa = entry2.getValue();
+                        if(finalSequence < pa) finalSequence = pa;
+                    }
+                    TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(1).get(entry.getKey());
+                    finalMessage.setSequence(finalSequence);
+                    finalMessage.setMessageType(TotalOrderMessageType.FINAL);
+                    //basicMulticast.send(groupId, finalMessage);
+                    bufferMessageTable.get(1).remove(finalMessage);
+                    groupLastSequence.put(1, finalSequence);
+                    // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
+                    
+                    
+                    cachedSequenceTable.remove(entry.getKey());
+                    
+                    System.out.println("Invio a tutti tranne al RM attualmente sospetto");
+                    
+                    basicMulticast(finalMessage.toString());
+            }
+            
+        }
+    }
+    
+    
+    private boolean isReadyToSendFinal(Map<Integer,Integer> cachedSequence){
+        boolean result = false;
+        
+        int pa;
+        //int p;
+        
+        for(int i = 0; i< alive.size(); i++){
+          pa = (int) alive.toArray()[i];
+          if (!cachedSequence.containsKey(pa)){
+              result = false;
+              return result;
+          }
+        }
+        result = true;
+        
+        return result;
+    }
+    
+    
 
     private static void offer(java.lang.String offerMsg) {
         offer.OfferWebService_Service service = new offer.OfferWebService_Service();
