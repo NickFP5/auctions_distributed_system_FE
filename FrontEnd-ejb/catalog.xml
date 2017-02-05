@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8080/ReplicaManager-war/userWebService?wsdl" uri="src/conf/xml-resources/web-service-references/userWebService/wsdl/localhost_8080/ReplicaManager-war/userWebService.wsdl"/>
-    <system systemId="http://localhost:8080/ReplicaManager-war/userWebService?xsd=1" uri="src/conf/xml-resources/web-service-references/userWebService/wsdl/localhost_8080/ReplicaManager-war/userWebService.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/itemWebService?wsdl" uri="src/conf/xml-resources/web-service-references/itemWebService/wsdl/localhost_8080/ReplicaManager-war/itemWebService.wsdl"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/itemWebService?xsd=1" uri="src/conf/xml-resources/web-service-references/itemWebService/wsdl/localhost_8080/ReplicaManager-war/itemWebService.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/userWebService?wsdl" uri="src/conf/xml-resources/web-service-references/userWebService/wsdl/localhost_8080/ReplicaManager-war/userWebService.wsdl"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/userWebService?xsd=1" uri="src/conf/xml-resources/web-service-references/userWebService/wsdl/localhost_8080/ReplicaManager-war/userWebService.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/transactionWebService?wsdl" uri="src/conf/xml-resources/web-service-references/transactionWebService/wsdl/localhost_8080/ReplicaManager-war/transactionWebService.wsdl"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/transactionWebService?xsd=1" uri="src/conf/xml-resources/web-service-references/transactionWebService/wsdl/localhost_8080/ReplicaManager-war/transactionWebService.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/offerWebService?wsdl" uri="src/conf/xml-resources/web-service-references/offerWebService/wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl"/>

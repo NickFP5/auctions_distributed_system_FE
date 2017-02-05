@@ -26,17 +26,18 @@ public class prTsWebService {
     /**
      * This is a sample web service operation
      */
-    @WebMethod(operationName = "proposedTs")
+    @WebMethod(operationName = "proposed")
     public void proposed(@WebParam(name = "proposedTs") String proposedTs) {
+        System.out.println("ProposedTS WebService received: " + proposedTs);
         JsonObject jo = Json.createReader(new StringReader(proposedTs)).readObject();
         TotalOrderMulticastMessage msg = new TotalOrderMulticastMessage();
         msg.setMessageId(jo.getInt("messageId"));
-        msg.setTotalOrderSequence(jo.getInt("totalOrderSequence"));
+        //msg.setTotalOrderSequence(jo.getInt("totalOrderSequence"));
 	msg.setMessageType(TotalOrderMessageType.PROPOSAL);
-	msg.setGroupId(jo.getInt("groipId"));
+	msg.setGroupId(jo.getInt("groupId"));
 	msg.setSource(jo.getInt("source"));
         msg.setSequence(jo.getInt("sequence"));
-        msg.setContent(jo.getString("content"));
+        //msg.setContent(jo.getString("content"));
 
         ///------->
         

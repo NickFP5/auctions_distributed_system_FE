@@ -86,7 +86,7 @@ public class totalOrderMulticastSender {
     }
 
     public void send(int groupId, String groupMessage) {
-        synchronized (_mutex) {
+        //synchronized (_mutex) {
             System.out.println("Dentro send di totalSender");
             TotalOrderMulticastMessage tomm;
             
@@ -117,17 +117,18 @@ public class totalOrderMulticastSender {
             groupMessageCounter.put(groupId, messageId + 1);
             //basicMulticast.send(groupId, tomm);
             basicMulticast(tomm.toString());
-        }
+        //} fine synchgronized
     }
 
     public void basicMulticast(String msg) {
-        System.out.println("Invio il messaggio, sono il SENDER BEAN");
+        System.out.println("Invio il messaggio " + msg + " , sono il SENDER BEAN");
         //per ognuno dei replicaManager
         offer(msg);
     }
 
     public void delivery(IMessage message) {
-        synchronized (_mutex) {
+        System.out.println("TotalOrderSender inside delivery (id " + myid + ") received msg: " + message.toString());
+        //synchronized (_mutex) {
             TotalOrderMulticastMessage tomm = (TotalOrderMulticastMessage) message;
             int groupId;
             int sequence;
@@ -135,6 +136,8 @@ public class totalOrderMulticastSender {
             List<TotalOrderMulticastMessage> priorityQueue;
             TotalOrderMessageType messageType;
 
+            System.out.println("TotalOrderSender inside delivery inside syncrhonized");
+            
             groupId = tomm.getGroupId();
      // -------->      selfId = Profile.getInstance().getId();
             
@@ -150,9 +153,12 @@ public class totalOrderMulticastSender {
             priorityQueue = holdbackQueueTable.get(groupId);
             messageType = tomm.getMessageType();
             sequence = groupLastSequence.get(groupId);
+            
+            
 
             //System.out.println("receive message: "+ tomm);
             if (messageType == TotalOrderMessageType.INITIAL) {
+                System.out.println("TotalOrderSender (id" + myid + ") received INITIAL msg. Something went wrong.");
                 TotalOrderMulticastMessage reply;
                 sequence += 1;
                 groupLastSequence.put(groupId, sequence);
@@ -170,6 +176,7 @@ public class totalOrderMulticastSender {
                 priorityQueue.add(tomm);
                 Collections.sort(priorityQueue);
             } else if (messageType == TotalOrderMessageType.PROPOSAL) {
+                System.out.println("TotalOrderSender (id" + myid + ") received PROPOSAL msg. ");
                 List<Integer> cachedSequence;
                 Map<Integer, List<Integer>> cachedSequenceTable;
                 int messageId = tomm.getMessageId();
@@ -186,7 +193,8 @@ public class totalOrderMulticastSender {
                 cachedSequence.add(proposeSequence);
                 //System.out.println("receive proposed message: " + tomm);
      //   ------>        if (cachedSequence.size() == MemberIndexer.getInstance().getGroupSize(groupId)) {
-            if (cachedSequence.size() == mygroupsize) {
+            if (cachedSequence.size() == mygroupsize - 1) {
+                    System.out.println("TotalOrderSender (id" + myid + ") collected all PROPOSAL msg. Sending FINAL msg to group.");
                     int finalSequence = 0;
                     finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
                     TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(groupId).get(messageId);
@@ -239,13 +247,14 @@ public class totalOrderMulticastSender {
                     }
                 }
             }
-        }
+        //} //fine synchronized
     }
 
-    private static String offer(java.lang.String offerMsg) {
+    private static void offer(java.lang.String offerMsg) {
         offer.OfferWebService_Service service = new offer.OfferWebService_Service();
         offer.OfferWebService port = service.getOfferWebServicePort();
-        return port.offer(offerMsg);
+        port.offer(offerMsg);
     }
-
+    
+    
 }

@@ -4,31 +4,31 @@
 <xsd:import namespace="http://offer/" schemaLocation="http://localhost:8080/ReplicaManager-war/offerWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="getTransaction">
-<part name="parameters" element="tns:getTransaction"/>
-</message>
-<message name="getTransactionResponse">
-<part name="parameters" element="tns:getTransactionResponse"/>
-</message>
 <message name="offer">
 <part name="parameters" element="tns:offer"/>
 </message>
 <message name="offerResponse">
 <part name="parameters" element="tns:offerResponse"/>
 </message>
+<message name="getTransaction">
+<part name="parameters" element="tns:getTransaction"/>
+</message>
+<message name="getTransactionResponse">
+<part name="parameters" element="tns:getTransactionResponse"/>
+</message>
 <portType name="offerWebService">
-<operation name="getTransaction">
-<input wsam:Action="http://offer/offerWebService/getTransactionRequest" message="tns:getTransaction"/>
-<output wsam:Action="http://offer/offerWebService/getTransactionResponse" message="tns:getTransactionResponse"/>
-</operation>
 <operation name="offer">
 <input wsam:Action="http://offer/offerWebService/offerRequest" message="tns:offer"/>
 <output wsam:Action="http://offer/offerWebService/offerResponse" message="tns:offerResponse"/>
 </operation>
+<operation name="getTransaction">
+<input wsam:Action="http://offer/offerWebService/getTransactionRequest" message="tns:getTransaction"/>
+<output wsam:Action="http://offer/offerWebService/getTransactionResponse" message="tns:getTransactionResponse"/>
+</operation>
 </portType>
 <binding name="offerWebServicePortBinding" type="tns:offerWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="getTransaction">
+<operation name="offer">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -37,7 +37,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="offer">
+<operation name="getTransaction">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

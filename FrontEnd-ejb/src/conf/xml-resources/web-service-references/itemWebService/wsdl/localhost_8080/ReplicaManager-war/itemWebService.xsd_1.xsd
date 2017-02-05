@@ -34,17 +34,6 @@
 <xs:sequence/>
 </xs:complexType>
 
-<xs:complexType name="updatePrice">
-<xs:sequence>
-<xs:element name="id" type="xs:int"/>
-<xs:element name="price" type="xs:float"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="updatePriceResponse">
-<xs:sequence/>
-</xs:complexType>
-
 <xs:complexType name="updateTitle">
 <xs:sequence>
 <xs:element name="id" type="xs:int"/>
@@ -53,6 +42,17 @@
 </xs:complexType>
 
 <xs:complexType name="updateTitleResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="updatePrice">
+<xs:sequence>
+<xs:element name="id" type="xs:int"/>
+<xs:element name="price" type="xs:float"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updatePriceResponse">
 <xs:sequence/>
 </xs:complexType>
 

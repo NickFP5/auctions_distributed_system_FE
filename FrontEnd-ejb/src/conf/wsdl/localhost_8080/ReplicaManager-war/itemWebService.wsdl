@@ -16,29 +16,29 @@
 <message name="insertResponse">
 <part name="parameters" element="tns:insertResponse"/>
 </message>
-<message name="selectLive">
-<part name="parameters" element="tns:selectLive"/>
-</message>
-<message name="selectLiveResponse">
-<part name="parameters" element="tns:selectLiveResponse"/>
-</message>
-<message name="updatePrice">
-<part name="parameters" element="tns:updatePrice"/>
-</message>
-<message name="updatePriceResponse">
-<part name="parameters" element="tns:updatePriceResponse"/>
-</message>
 <message name="updateExpiringDate">
 <part name="parameters" element="tns:updateExpiringDate"/>
 </message>
 <message name="updateExpiringDateResponse">
 <part name="parameters" element="tns:updateExpiringDateResponse"/>
 </message>
+<message name="selectLive">
+<part name="parameters" element="tns:selectLive"/>
+</message>
+<message name="selectLiveResponse">
+<part name="parameters" element="tns:selectLiveResponse"/>
+</message>
 <message name="updateTitle">
 <part name="parameters" element="tns:updateTitle"/>
 </message>
 <message name="updateTitleResponse">
 <part name="parameters" element="tns:updateTitleResponse"/>
+</message>
+<message name="updatePrice">
+<part name="parameters" element="tns:updatePrice"/>
+</message>
+<message name="updatePriceResponse">
+<part name="parameters" element="tns:updatePriceResponse"/>
 </message>
 <portType name="itemWebService">
 <operation name="delete">
@@ -49,21 +49,21 @@
 <input wsam:Action="http://items/itemWebService/insertRequest" message="tns:insert"/>
 <output wsam:Action="http://items/itemWebService/insertResponse" message="tns:insertResponse"/>
 </operation>
-<operation name="selectLive">
-<input wsam:Action="http://items/itemWebService/selectLiveRequest" message="tns:selectLive"/>
-<output wsam:Action="http://items/itemWebService/selectLiveResponse" message="tns:selectLiveResponse"/>
-</operation>
-<operation name="updatePrice">
-<input wsam:Action="http://items/itemWebService/updatePriceRequest" message="tns:updatePrice"/>
-<output wsam:Action="http://items/itemWebService/updatePriceResponse" message="tns:updatePriceResponse"/>
-</operation>
 <operation name="updateExpiringDate">
 <input wsam:Action="http://items/itemWebService/updateExpiringDateRequest" message="tns:updateExpiringDate"/>
 <output wsam:Action="http://items/itemWebService/updateExpiringDateResponse" message="tns:updateExpiringDateResponse"/>
 </operation>
+<operation name="selectLive">
+<input wsam:Action="http://items/itemWebService/selectLiveRequest" message="tns:selectLive"/>
+<output wsam:Action="http://items/itemWebService/selectLiveResponse" message="tns:selectLiveResponse"/>
+</operation>
 <operation name="updateTitle">
 <input wsam:Action="http://items/itemWebService/updateTitleRequest" message="tns:updateTitle"/>
 <output wsam:Action="http://items/itemWebService/updateTitleResponse" message="tns:updateTitleResponse"/>
+</operation>
+<operation name="updatePrice">
+<input wsam:Action="http://items/itemWebService/updatePriceRequest" message="tns:updatePrice"/>
+<output wsam:Action="http://items/itemWebService/updatePriceResponse" message="tns:updatePriceResponse"/>
 </operation>
 </portType>
 <binding name="itemWebServicePortBinding" type="tns:itemWebService">
@@ -86,24 +86,6 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="selectLive">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="updatePrice">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
 <operation name="updateExpiringDate">
 <soap:operation soapAction=""/>
 <input>
@@ -113,7 +95,25 @@
 <soap:body use="literal"/>
 </output>
 </operation>
+<operation name="selectLive">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="updateTitle">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="updatePrice">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
