@@ -13,6 +13,9 @@ import model.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.ws.BindingProvider;
+import netConf.NetworkConfigurator;
+import netConf.NetworkNode;
 
 public class totalOrderMulticastSender {
 
@@ -56,8 +59,10 @@ public class totalOrderMulticastSender {
             Scanner s = new Scanner(config);
             
             myconfig  = s.nextLine();
-            //rmconfig = s.nextLine();
+            //rmconfig = s.nextLine();         
             */
+             
+            /* 
             String myconfig = "1 127.0.0.1 8080 FR1 1";
              
             String[] aux = myconfig.split(" ");
@@ -67,6 +72,18 @@ public class totalOrderMulticastSender {
             myname = aux[3];
             mygroup = Integer.parseInt(aux[4]);
             mygroupsize = 2;
+            */
+            
+            NetworkConfigurator nc = NetworkConfigurator.getInstance(false);
+            NetworkNode nn = nc.getMyself();
+            myid = nn.getId();
+            myip = nn.getIp();
+            myport = nn.getPort();
+            myname = nn.getName();
+            mygroup = 1;
+            mygroupsize = nc.getReplicas().size()+1;
+            
+            
             
             System.out.println("MIO ID-->" + myid + "MIO IP--->" + myip + "MIO NOME--->" + myname);
             
@@ -86,7 +103,12 @@ public class totalOrderMulticastSender {
             
             // DA MODIFICARE CON IL DEPLOY
             alive = new HashSet<Integer>();
-            alive.add(2);
+            NetworkNode nodo;
+            List <NetworkNode> replicas = nc.getReplicas();
+            for(int i = 0; i< replicas.size() ; i++){
+                 nodo = (NetworkNode) replicas.toArray()[i];
+                 alive.add(nodo.getId());
+            }
         
     }
 
@@ -286,34 +308,36 @@ public class totalOrderMulticastSender {
         boolean result;
         Map<Integer,Integer> cachedSequence;
         Map<Integer, Map<Integer, Integer>> cachedSequenceTable = groupProposalSequence.get(1);
-        for(Map.Entry<Integer, Map<Integer,Integer>> entry : cachedSequenceTable.entrySet()){
-            cachedSequence = entry.getValue();
-            result = isReadyToSendFinal(cachedSequence);
-            if(result){
-                int finalSequence = 0;
-                  //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
-                    int pa;
-                    for(Map.Entry<Integer,Integer> entry2 : cachedSequence.entrySet()){
-                        pa = entry2.getValue();
-                        if(finalSequence < pa) finalSequence = pa;
-                    }
-                    TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(1).get(entry.getKey());
-                    finalMessage.setSequence(finalSequence);
-                    finalMessage.setMessageType(TotalOrderMessageType.FINAL);
-                    //basicMulticast.send(groupId, finalMessage);
-                    bufferMessageTable.get(1).remove(finalMessage);
-                    groupLastSequence.put(1, finalSequence);
-                    // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
-                    
-                    
-                    cachedSequenceTable.remove(entry.getKey());
-                    
-                    System.out.println("Invio a tutti tranne al RM attualmente sospetto");
-                    
-                    basicMulticast(finalMessage.toString());
+        if(cachedSequenceTable != null){
+            for(Map.Entry<Integer, Map<Integer,Integer>> entry : cachedSequenceTable.entrySet()){
+                cachedSequence = entry.getValue();
+                result = isReadyToSendFinal(cachedSequence);
+                if(result){
+                    int finalSequence = 0;
+                      //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
+                        int pa;
+                        for(Map.Entry<Integer,Integer> entry2 : cachedSequence.entrySet()){
+                            pa = entry2.getValue();
+                            if(finalSequence < pa) finalSequence = pa;
+                        }
+                        TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(1).get(entry.getKey());
+                        finalMessage.setSequence(finalSequence);
+                        finalMessage.setMessageType(TotalOrderMessageType.FINAL);
+                        //basicMulticast.send(groupId, finalMessage);
+                        bufferMessageTable.get(1).remove(finalMessage);
+                        groupLastSequence.put(1, finalSequence);
+                        // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
+
+
+                        cachedSequenceTable.remove(entry.getKey());
+
+                        System.out.println("Invio a tutti tranne al RM attualmente sospetto");
+
+                        basicMulticast(finalMessage.toString());
+                }
+
             }
-            
-        }
+        }    
     }
     
     
@@ -340,7 +364,21 @@ public class totalOrderMulticastSender {
     private static void offer(java.lang.String offerMsg) {
         offer.OfferWebService_Service service = new offer.OfferWebService_Service();
         offer.OfferWebService port = service.getOfferWebServicePort();
-        port.offer(offerMsg);
+        //port.offer(offerMsg);
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
+            );
+            port.offer(offerMsg);
+        }
+        
     }
     
     

@@ -7,10 +7,14 @@ package registration;
 
 
 import java.io.StringReader;
+import java.util.Iterator;
 import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceRef;
+import netConf.NetworkConfigurator;
+import netConf.NetworkNode;
 import resources.User;
 import user.UserWebService_Service;
 
@@ -60,6 +64,22 @@ public class registrationBean implements registrationBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         user.UserWebService port = service.getUserWebServicePort();
-        return port.insert(email, name, password);
+        //return port.insert(email, name, password);
+        
+         BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        String result = null;
+        
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/userWebService"
+            );
+            result = port.insert(email, name, password);
+        }
+        return result;
     }
 }

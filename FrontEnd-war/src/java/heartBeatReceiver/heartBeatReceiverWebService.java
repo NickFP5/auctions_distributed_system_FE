@@ -6,6 +6,7 @@
 package heartBeatReceiver;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -13,6 +14,8 @@ import javax.inject.Inject;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import netConf.NetworkConfigurator;
+import netConf.NetworkNode;
 import totalOrderReplicazione.totalOrderMulticastSender;
 
 /**
@@ -34,15 +37,30 @@ public class heartBeatReceiverWebService {
     @Inject
     private totalOrderMulticastSender toms;
     
+    @Inject
+    private NetworkConfigurator nc;
+    
+    
+    
     @PostConstruct
     public void init(){
         alive = new HashSet<Integer>();
         suspected = new HashSet<Integer>();
         delay = 30000;
         total_process = new HashSet<Integer>();
-        total_process.add(2);
-        checkSuspect();
+        
+        NetworkNode nodo;
+        List <NetworkNode> replicas = nc.getReplicas();
+        for(int i = 0; i< replicas.size() ; i++){
+                 nodo = (NetworkNode) replicas.toArray()[i];
+                 total_process.add(nodo.getId());
+        }
+        
+        
+        //total_process.add(2);
         toms = totalOrderMulticastSender.getInstance();
+        checkSuspect();
+        
         
         
     }

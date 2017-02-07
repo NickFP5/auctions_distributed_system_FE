@@ -15,7 +15,7 @@
 
     function viewAuctionsController($q,$window) {
         var vm = this;
-        var viewUri = "ws://localhost:8080/FrontEnd-war/viewAuctions";
+        var viewUri = "ws://" + window.location.host +"/FrontEnd-war/viewAuctions";
         var output;
         var websocket;
         vm.itemid = null;

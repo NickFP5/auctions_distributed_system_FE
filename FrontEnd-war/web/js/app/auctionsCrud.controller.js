@@ -15,11 +15,11 @@
 
     function auctionsCrudController($q) {
         var vm = this;
-        var createUri = "ws://localhost:8080/FrontEnd-war/createItem";
-        var editTitleUri = "ws://localhost:8080/FrontEnd-war/modifyItemTitle";
-        var editPriceUri = "ws://localhost:8080/FrontEnd-war/modifyItemPrice";
-        var editExpDateUri = "ws://localhost:8080/FrontEnd-war/modifyItemExpiringDate";
-        var deleteUri = "ws://localhost:8080/FrontEnd-war/removeItem";
+        var createUri = "ws://" + window.location.host +"/FrontEnd-war/createItem";
+        var editTitleUri = "ws://" + window.location.host +"/FrontEnd-war/modifyItemTitle";
+        var editPriceUri = "ws://" + window.location.host +"/FrontEnd-war/modifyItemPrice";
+        var editExpDateUri = "ws://" + window.location.host +"/FrontEnd-war/modifyItemExpiringDate";
+        var deleteUri = "ws://" + window.location.host +"/FrontEnd-war/removeItem";
         var output;
         var websocket; // = new WebSocket(wsUri);
         vm.itemid = null;

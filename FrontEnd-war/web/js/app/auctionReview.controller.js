@@ -15,7 +15,7 @@
 
     function auctionReviewController($q, $timeout) {
         var vm = this;
-        var OfferUri = "ws://localhost:8080/FrontEnd-war/offer";
+        var OfferUri = "ws://" + window.location.host +"/FrontEnd-war/offer";
         var output;
         var websocket; // = new WebSocket(wsUri);
         

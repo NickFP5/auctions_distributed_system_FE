@@ -5,6 +5,7 @@
  */
 package crudItem;
 
+import netConf.NetworkConfigurator;
 import items.ItemWebService_Service;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -16,7 +17,9 @@ import javax.ejb.Stateless;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceRef;
+import netConf.NetworkNode;
 import resources.Item;
 
 /**
@@ -62,14 +65,41 @@ public class crudItemBean implements crudItemBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         items.ItemWebService port = service.getItemWebServicePort();
-        port.updateTitle(id, title);
+        //port.updateTitle(id, title);
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
+            );
+            port.updateTitle(id, title);
+        }
+        
     }
 
     private void updatePrice(int id, float price) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         items.ItemWebService port = service.getItemWebServicePort();
-        port.updatePrice(id, price);
+        //port.updatePrice(id, price);
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
+            );
+            port.updatePrice(id, price);
+        }
+        
     }
 
     private void updateExpiringDate(int id, long exp) {
@@ -83,14 +113,43 @@ public class crudItemBean implements crudItemBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         items.ItemWebService port = service.getItemWebServicePort();
-        port.insert(title, price, sellerId, expiringDate);
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
+            );
+            port.insert(title, price, sellerId, expiringDate);
+        }
+        
     }
 
     private void delete(int id) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         items.ItemWebService port = service.getItemWebServicePort();
-        port.delete(id);
+        
+        //port.delete(id);
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+
+        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+            NetworkNode n = (NetworkNode) it.next();
+            
+            bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
+            );
+            port.delete(id);
+        }
+        
+        
     }
     
 }
