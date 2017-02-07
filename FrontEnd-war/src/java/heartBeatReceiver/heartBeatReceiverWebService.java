@@ -46,9 +46,10 @@ public class heartBeatReceiverWebService {
     public void init(){
         alive = new HashSet<Integer>();
         suspected = new HashSet<Integer>();
-        delay = 30000;
+        delay = 10000;
         total_process = new HashSet<Integer>();
         
+        nc = NetworkConfigurator.getInstance(false);
         NetworkNode nodo;
         List <NetworkNode> replicas = nc.getReplicas();
         for(int i = 0; i< replicas.size() ; i++){
@@ -87,15 +88,15 @@ public class heartBeatReceiverWebService {
     } 
     
     private void checkSuspect(){
-        System.out.println("Inside checkSuspect --");
+        //System.out.println("Inside checkSuspect --");
         int q  = 0;
         while(true){
             for(int i = 0; i < total_process.size(); i++){
-                System.out.println("Inside  for checkSuspect -->");
+               // System.out.println("Inside  for checkSuspect -->");
                 q = (int) total_process.toArray()[i];
-                System.out.println("Inside  for checkSuspect -->" + q);
+                System.out.println("Inside  for checkSuspect Vedo se -->" + q + " è alive");
                 if (!alive.contains(q) && !suspected.contains(q)){
-                    System.out.println("Aggiungo q alla lista dei sospettati");
+                    System.out.println("Aggiungo " + q + " alla lista dei sospettati");
                     suspected.add(q);
                     toms.removeToAlive(q);
                 }

@@ -118,6 +118,7 @@ public class totalOrderMulticastSender {
 
     public void send(int groupId, String groupMessage) {
         //synchronized (_mutex) {
+        synchronized(this){
             System.out.println("Dentro send di totalSender");
             TotalOrderMulticastMessage tomm;
             
@@ -148,7 +149,7 @@ public class totalOrderMulticastSender {
             groupMessageCounter.put(groupId, messageId + 1);
             //basicMulticast.send(groupId, tomm);
             basicMulticast(tomm.toString());
-        //} fine synchgronized
+        } //fine synchgronized
     }
 
     public void basicMulticast(String msg) {
@@ -161,6 +162,7 @@ public class totalOrderMulticastSender {
     public void delivery(IMessage message) {
         System.out.println("TotalOrderSender inside delivery (id " + myid + ") received msg: " + message.toString());
         //synchronized (_mutex) {
+        synchronized(this){
             TotalOrderMulticastMessage tomm = (TotalOrderMulticastMessage) message;
             int groupId;
             int sequence;
@@ -294,49 +296,53 @@ public class totalOrderMulticastSender {
                     }
                 }
             }
-        //} //fine synchronized
+        } //fine synchronized
     }
     
     
     public void addToAlive(int p){
-        alive.add(p);
+        synchronized(this){
+            alive.add(p);
+        }
     }
     
     public void removeToAlive(int p){
-        System.out.println("Rimuovo un RM sospetto");
-        alive.remove(p);
-        boolean result;
-        Map<Integer,Integer> cachedSequence;
-        Map<Integer, Map<Integer, Integer>> cachedSequenceTable = groupProposalSequence.get(1);
-        if(cachedSequenceTable != null){
-            for(Map.Entry<Integer, Map<Integer,Integer>> entry : cachedSequenceTable.entrySet()){
-                cachedSequence = entry.getValue();
-                result = isReadyToSendFinal(cachedSequence);
-                if(result){
-                    int finalSequence = 0;
-                      //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
-                        int pa;
-                        for(Map.Entry<Integer,Integer> entry2 : cachedSequence.entrySet()){
-                            pa = entry2.getValue();
-                            if(finalSequence < pa) finalSequence = pa;
-                        }
-                        TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(1).get(entry.getKey());
-                        finalMessage.setSequence(finalSequence);
-                        finalMessage.setMessageType(TotalOrderMessageType.FINAL);
-                        //basicMulticast.send(groupId, finalMessage);
-                        bufferMessageTable.get(1).remove(finalMessage);
-                        groupLastSequence.put(1, finalSequence);
-                        // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
+        synchronized(this){
+            System.out.println("Rimuovo un RM sospetto dalla lista degli alive");
+            alive.remove(p);
+            boolean result;
+            Map<Integer,Integer> cachedSequence;
+            Map<Integer, Map<Integer, Integer>> cachedSequenceTable = groupProposalSequence.get(1);
+            if(cachedSequenceTable != null){
+                for(Map.Entry<Integer, Map<Integer,Integer>> entry : cachedSequenceTable.entrySet()){
+                    cachedSequence = entry.getValue();
+                    result = isReadyToSendFinal(cachedSequence);
+                    if(result){
+                        int finalSequence = 0;
+                          //  finalSequence = sequence > Collections.max(cachedSequence) ? sequence : Collections.max(cachedSequence);
+                            int pa;
+                            for(Map.Entry<Integer,Integer> entry2 : cachedSequence.entrySet()){
+                                pa = entry2.getValue();
+                                if(finalSequence < pa) finalSequence = pa;
+                            }
+                            TotalOrderMulticastMessage finalMessage = bufferMessageTable.get(1).get(entry.getKey());
+                            finalMessage.setSequence(finalSequence);
+                            finalMessage.setMessageType(TotalOrderMessageType.FINAL);
+                            //basicMulticast.send(groupId, finalMessage);
+                            bufferMessageTable.get(1).remove(finalMessage);
+                            groupLastSequence.put(1, finalSequence);
+                            // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
 
 
-                        cachedSequenceTable.remove(entry.getKey());
+                            cachedSequenceTable.remove(entry.getKey());
 
-                        System.out.println("Invio a tutti tranne al RM attualmente sospetto");
+                            System.out.println("Invio a tutti tranne al RM attualmente sospetto");
 
-                        basicMulticast(finalMessage.toString());
+                            basicMulticast(finalMessage.toString());
+                    }
+
                 }
-
-            }
+            }  
         }    
     }
     
