@@ -58,23 +58,6 @@
         <delete dir="${build.generated.dir}/jax-wsCache/itemWebService"/>
         <delete dir="${build.generated.sources.dir}/jax-ws/items"/>
     </target>
-    <target name="wsimport-client-offerWebService" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
-        <property name="wsdl-offerWebService" location="${meta.inf}/xml-resources/web-service-references/offerWebService/wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/offerWebService" destdir="${build.generated.dir}/jax-wsCache/offerWebService" wsdl="${wsdl-offerWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/ReplicaManager-war/offerWebService?wsdl" xnocompile="true" xendorsed="true">
-            <depends file="${wsdl-offerWebService}"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
-        </wsimport>
-        <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/offerWebService">
-                <include name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="wsimport-client-clean-offerWebService" depends="-init-project">
-        <delete dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
-        <delete dir="${build.generated.sources.dir}/jax-ws/offer"/>
-    </target>
     <target name="wsimport-client-transactionWebService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/transactionWebService"/>
         <property name="wsdl-transactionWebService" location="${meta.inf}/xml-resources/web-service-references/transactionWebService/wsdl/localhost_8080/ReplicaManager-war/transactionWebService.wsdl"/>
@@ -92,5 +75,22 @@
         <delete dir="${build.generated.dir}/jax-wsCache/transactionWebService"/>
         <delete dir="${build.generated.sources.dir}/jax-ws/transaction"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-userWebService, wsimport-client-itemWebService, wsimport-client-offerWebService, wsimport-client-transactionWebService"/>
+    <target name="wsimport-client-offerWebService" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
+        <property name="wsdl-offerWebService" location="${meta.inf}/xml-resources/web-service-references/offerWebService/wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/offerWebService" destdir="${build.generated.dir}/jax-wsCache/offerWebService" wsdl="${wsdl-offerWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/ReplicaManager-war/offerWebService?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-offerWebService}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/offerWebService">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-offerWebService" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/offer"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-userWebService, wsimport-client-itemWebService, wsimport-client-transactionWebService, wsimport-client-offerWebService"/>
 </project>

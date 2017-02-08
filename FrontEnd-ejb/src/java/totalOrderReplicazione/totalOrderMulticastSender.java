@@ -13,11 +13,17 @@ import model.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.xml.ws.BindingProvider;
 import netConf.NetworkConfigurator;
 import netConf.NetworkNode;
+import offer.offerBeanLocal;
 
 public class totalOrderMulticastSender {
+
+    
 
     private static totalOrderMulticastSender _instance = new totalOrderMulticastSender();
     private Map<Integer, List<TotalOrderMulticastMessage>> holdbackQueueTable;
@@ -27,7 +33,7 @@ public class totalOrderMulticastSender {
     private Map<Integer, Integer> groupMessageCounter;
     private Map<Integer, Map<Integer, TotalOrderMulticastMessage>> bufferMessageTable;
     //private BasicMulticast basicMulticast;
-    private Object _mutex;
+    private  Object _mutex;
     private List<String> deliveryQueue;
     private int  myport, myid, mygroup, mygroupsize;
     private String myname, myip;
@@ -35,45 +41,12 @@ public class totalOrderMulticastSender {
     private HashSet<Integer> alive;
     
     
+    
 
     private totalOrderMulticastSender(){
         
-       // try {
-            
-             // creazione file
-             /*
-            File f = new File("prova.txt");
-            try {
-                f.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(totalOrderMulticastSender.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("File absolute path-->" + f.getAbsolutePath() + "file path --> " + f.getPath());
-            
-            File config = new File("conf/config.txt");
-            
-            
-            String myconfig;
-            String rmconfig;
-            
-            Scanner s = new Scanner(config);
-            
-            myconfig  = s.nextLine();
-            //rmconfig = s.nextLine();         
-            */
-             
-            /* 
-            String myconfig = "1 127.0.0.1 8080 FR1 1";
-             
-            String[] aux = myconfig.split(" ");
-            myid = Integer.parseInt(aux[0]);
-            myip = aux[1];
-            myport = Integer.parseInt(aux[2]);
-            myname = aux[3];
-            mygroup = Integer.parseInt(aux[4]);
-            mygroupsize = 2;
-            */
-            
+      
+            _mutex = new Object();
             NetworkConfigurator nc = NetworkConfigurator.getInstance(false);
             NetworkNode nn = nc.getMyself();
             myid = nn.getId();
@@ -87,18 +60,16 @@ public class totalOrderMulticastSender {
             
             System.out.println("MIO ID-->" + myid + "MIO IP--->" + myip + "MIO NOME--->" + myname);
             
-          //  } catch (FileNotFoundException ex) {
-          //  Logger.getLogger(totalOrderMulticastSender.class.getName()).log(Level.SEVERE, null, ex);
-        //}
-            
+        
             holdbackQueueTable = new Hashtable<Integer, List<TotalOrderMulticastMessage>>();
             groupLastSequence = new Hashtable<Integer, Integer>();
             //basicMulticast = BasicMulticast.getInstance();
             bufferMessageTable = new Hashtable<Integer, Map<Integer, TotalOrderMulticastMessage>>();
+            bufferMessageTable.put(1, new Hashtable<Integer, TotalOrderMulticastMessage>());
             //groupProposalSequence = new Hashtable<Integer, Map<Integer, List<Integer>>>();
             groupProposalSequence = new Hashtable<Integer, Map<Integer, Map<Integer, Integer>>>();
             groupMessageCounter = new Hashtable<Integer, Integer>();
-            _mutex = new Object();
+            //_mutex = new Object();
             deliveryQueue = new LinkedList<String>();
             
             // DA MODIFICARE CON IL DEPLOY
@@ -112,13 +83,13 @@ public class totalOrderMulticastSender {
         
     }
 
-    public static totalOrderMulticastSender getInstance() {
+    public static synchronized totalOrderMulticastSender getInstance() {
         return _instance;
     }
 
-    public void send(int groupId, String groupMessage) {
-        //synchronized (_mutex) {
-        synchronized(this){
+    public String send(int groupId, String groupMessage) {
+       // synchronized (_mutex) {
+        //synchronized(this){
             System.out.println("Dentro send di totalSender");
             TotalOrderMulticastMessage tomm;
             
@@ -148,21 +119,51 @@ public class totalOrderMulticastSender {
 
             groupMessageCounter.put(groupId, messageId + 1);
             //basicMulticast.send(groupId, tomm);
-            basicMulticast(tomm.toString());
-        } //fine synchgronized
-    }
+            
+      //::::---->            notifyAll();
+            
+            
+           //System.out.println("STO INVIANDO IL NOTIFY");
+           // _mutex.notifyAll();
+           System.out.println("Invio il messaggio " + tomm.toString() + " , sono il SENDER BEAN");
+           return tomm.toString();
+            
+          
+          
+          
+           // ----->delivery
 
+            // delivery(message)
+            
+            
+            
+     //   } //fine synchgronized
+         
+    }
+/*
     public void basicMulticast(String msg) {
         System.out.println("Invio il messaggio " + msg + " , sono il SENDER BEAN");
         //per ognuno dei replicaManager non sospetto
         
-        offer(msg);
+      //::::---->        notifyAll();
+        
+        //offerBean.offer(msg);
     }
-
-    public void delivery(IMessage message) {
-        System.out.println("TotalOrderSender inside delivery (id " + myid + ") received msg: " + message.toString());
-        //synchronized (_mutex) {
-        synchronized(this){
+*/
+    public String delivery(IMessage message) {
+        System.out.println("TotalOrderSender  PRIMA DEL SYNCHRONIZED inside delivery (id " + myid + ") received msg: " + message.toString());
+        
+        
+     //   synchronized (_mutex) {
+        
+        /*try {
+            System.out.println("Mi METTO IN ATTESA DEL NOTIFY");
+            _mutex.wait();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(totalOrderMulticastSender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+*/
+        //synchronized(this){
             TotalOrderMulticastMessage tomm = (TotalOrderMulticastMessage) message;
             int groupId;
             int sequence;
@@ -190,26 +191,7 @@ public class totalOrderMulticastSender {
             
             
 
-            //System.out.println("receive message: "+ tomm);
-            if (messageType == TotalOrderMessageType.INITIAL) {
-                System.out.println("TotalOrderSender (id" + myid + ") received INITIAL msg. Something went wrong.");
-                TotalOrderMulticastMessage reply;
-                sequence += 1;
-                groupLastSequence.put(groupId, sequence);
-
-                reply = new TotalOrderMulticastMessage();
-                reply.setSource(selfId);
-                reply.setGroupId(groupId);
-                reply.setMessageType(TotalOrderMessageType.PROPOSAL);
-                reply.setSequence(sequence);
-                reply.setMessageId(tomm.getMessageId());
-                //System.out.println("reply message" + reply);
-                //basicMulticast.reply(groupId, tomm.getSource(), reply);
-
-                tomm.setSequence(sequence);
-                priorityQueue.add(tomm);
-                Collections.sort(priorityQueue);
-            } else if (messageType == TotalOrderMessageType.PROPOSAL) {
+           if (messageType == TotalOrderMessageType.PROPOSAL) {
                 System.out.println("TotalOrderSender (id" + myid + ") received PROPOSAL msg. ");
                 Map<Integer,Integer> cachedSequence;
                 Map<Integer, Map<Integer,Integer>> cachedSequenceTable;
@@ -251,65 +233,35 @@ public class totalOrderMulticastSender {
                     
                     cachedSequenceTable.remove(messageId);
                     
-                    basicMulticast(finalMessage.toString());
+           //::::---->               notifyAll();
+                    
+            //----->        basicMulticast(finalMessage.toString());
+                    return finalMessage.toString();
                     
                     
-                    
 
                 }
-
-            } else if (messageType == TotalOrderMessageType.FINAL) {
-                int source = tomm.getSource();
-                int mid = tomm.getMessageId();
-                for (TotalOrderMulticastMessage entry : priorityQueue) {
-                    int entryMID = entry.getMessageId();
-                    int entrySource = entry.getSource();
-                    if (entryMID == mid && entrySource == source) {
-                        entry.setMessageType(TotalOrderMessageType.FINAL);
-                        entry.setSequence(tomm.getSequence());
-                    }
-                }
-                if (sequence < tomm.getSequence()) {
-                    sequence = tomm.getSequence();
-                    groupLastSequence.put(groupId, sequence);
-                }
-
-                Collections.sort(priorityQueue);
-                /*
-				System.out.println("======================");
-				Iterator<TotalOrderMulticastMessage> iterator = priorityQueue.iterator();
-				while(iterator.hasNext()){
-					System.out.println(iterator.next());
-				}
-				
-				System.out.println("======================");
-                 */
-
-                while (priorityQueue.isEmpty() == false) {
-                    TotalOrderMulticastMessage entry = priorityQueue.get(0);
-                    //System.out.println(entry);
-                    if (entry == null || entry.isDeliverable() == false) {
-                        break;
-                    } else if (entry.isDeliverable()) {
-                        System.out.println("deliver total order message: " + entry.getContent());
-                        priorityQueue.remove(0);//();
-                    }
-                }
-            }
-        } //fine synchronized
+   
+            } 
+      //  } //fine synchronized
+      
+        return null;
+      
     }
     
     
     public void addToAlive(int p){
-        synchronized(this){
+        //synchronized (_mutex) {
             alive.add(p);
-        }
+            //::::---->      notifyAll();
+        //}
     }
     
-    public void removeToAlive(int p){
-        synchronized(this){
+    public List<String> removeToAlive(int p){
+       //  synchronized (_mutex) {
             System.out.println("Rimuovo un RM sospetto dalla lista degli alive");
             alive.remove(p);
+            List <String> finalMsgList = new LinkedList<String>();
             boolean result;
             Map<Integer,Integer> cachedSequence;
             Map<Integer, Map<Integer, Integer>> cachedSequenceTable = groupProposalSequence.get(1);
@@ -329,6 +281,9 @@ public class totalOrderMulticastSender {
                             finalMessage.setSequence(finalSequence);
                             finalMessage.setMessageType(TotalOrderMessageType.FINAL);
                             //basicMulticast.send(groupId, finalMessage);
+                            
+                            finalMsgList.add(finalMessage.toString());
+                            
                             bufferMessageTable.get(1).remove(finalMessage);
                             groupLastSequence.put(1, finalSequence);
                             // IL SENDER PRENDE IL PROPOSAL MSG, elabora il final e lo tramsette a tutti i membri del gruppo in formato JSON
@@ -337,17 +292,23 @@ public class totalOrderMulticastSender {
                             cachedSequenceTable.remove(entry.getKey());
 
                             System.out.println("Invio a tutti tranne al RM attualmente sospetto");
+                            
+                            
+  
 
-                            basicMulticast(finalMessage.toString());
+                        //   ------> basicMulticast(finalMessage.toString());
                     }
 
                 }
             }  
-        }    
+            return finalMsgList;
+            
+      //  }  //dentro send    
     }
     
     
     private boolean isReadyToSendFinal(Map<Integer,Integer> cachedSequence){
+        System.out.println("Sono nell'isReadyToSend");
         boolean result = false;
         
         int pa;
@@ -362,30 +323,10 @@ public class totalOrderMulticastSender {
         }
         result = true;
         
+        System.out.println("Sto per restituire ---> " + result + " nell' ISREADYTOFINAL");
+        
         return result;
     }
-    
-    
 
-    private static void offer(java.lang.String offerMsg) {
-        offer.OfferWebService_Service service = new offer.OfferWebService_Service();
-        offer.OfferWebService port = service.getOfferWebServicePort();
-        //port.offer(offerMsg);
-        
-        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
-        bindingProvider = (BindingProvider) port;
-
-        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
-            NetworkNode n = (NetworkNode) it.next();
-            
-            bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
-            );
-            port.offer(offerMsg);
-        }
-        
-    }
-    
     
 }

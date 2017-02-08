@@ -17,5 +17,8 @@ public interface offerBeanLocal {
 
 
     public String findTransaction(int itemId);
+    
+    //public void offer(java.lang.String offerMsg);
+    
 }
 
