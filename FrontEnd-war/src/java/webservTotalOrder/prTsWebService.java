@@ -73,7 +73,15 @@ public class prTsWebService {
                 "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
             );
             System.out.println("Sono il SENDER, STO INVIANDO A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
-            port.offer(offerMsg);
+            //port.offer(offerMsg);
+            
+            try{
+                port.offer(offerMsg);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+            
+            
         }
         
     }

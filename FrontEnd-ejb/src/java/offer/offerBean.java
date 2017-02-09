@@ -106,7 +106,7 @@ public class offerBean implements offerBeanLocal {
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
             );
-            System.out.println("Sono il SENDER, STO INVIANDO A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
+            System.out.println("Sono il SENDER, STO INVIANDO " + offerMsg+ " A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
             port.offer(offerMsg);
         }
         

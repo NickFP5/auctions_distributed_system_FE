@@ -124,7 +124,15 @@ public class crudItemBean implements crudItemBeanLocal {
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
             );
-            port.insert(title, price, sellerId, expiringDate);
+            //port.insert(title, price, sellerId, expiringDate);
+            
+            try{
+                port.insert(title, price, sellerId, expiringDate);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+            
+            
         }
         
     }
@@ -146,7 +154,14 @@ public class crudItemBean implements crudItemBeanLocal {
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/itemWebService"
             );
-            port.delete(id);
+            //port.delete(id);
+            
+            try{
+                port.delete(id);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+            
         }
         
         

@@ -78,7 +78,14 @@ public class registrationBean implements registrationBeanLocal {
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/userWebService"
             );
-            result = port.insert(email, name, password);
+            //result = port.insert(email, name, password);
+            
+            try{
+                result = port.insert(email, name, password);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+            
         }
         return result;
     }

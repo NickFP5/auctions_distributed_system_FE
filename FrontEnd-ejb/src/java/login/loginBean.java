@@ -53,7 +53,17 @@ public class loginBean implements loginBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         user.UserWebService port = service.getUserWebServicePort();
-        return port.select(email, password);
+        //return port.select(email, password);
+        String result = null;
+        
+        try{
+                result = port.select(email, password);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+        
+        return result;
+        
     }
 
  

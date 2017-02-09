@@ -37,7 +37,19 @@ public class viewTransactionsBean implements viewTransactionsBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         transaction.TransactionWebService port = service.getTransactionWebServicePort();
-        return port.selectTransactions();
+        //return port.selectTransactions();
+        
+        String result = null;
+        
+        try{
+                result = port.selectTransactions();
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+        
+        return result;
+        
+        
     }
 
     

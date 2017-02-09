@@ -31,6 +31,17 @@ public class viewAuctionsBean implements viewAuctionsBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         items.ItemWebService port = service.getItemWebServicePort();
-        return port.selectLive();
+        //return port.selectLive();
+        
+        String result = null;
+        
+        try{
+                result = port.selectLive();
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+        
+        return result;
+        
     }
 }
