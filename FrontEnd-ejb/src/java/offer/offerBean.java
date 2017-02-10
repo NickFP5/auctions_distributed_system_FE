@@ -131,7 +131,42 @@ public class offerBean implements offerBeanLocal {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         offer.OfferWebService port = service.getOfferWebServicePort();
-        return port.getTransaction(itemId);
+        
+        //return port.getTransaction(itemId);
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+        //String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+NetworkConfigurator.getInstance(false).getMyself().getPort()+"/ReplicaManager-war/userWebService";
+;
+        //System.out.println("FRONTEND WebService --> " + s);
+        NetworkNode node;
+        int porta = 0;
+        for(Iterator i  = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); i.hasNext();){
+            System.out.println("Dentro for select bean FE");
+            node = (NetworkNode) i.next();
+            if(NetworkConfigurator.getInstance(false).getMyself().getIp().equals(node.getIp())){
+                System.out.println("Trovata replica che ha il mio stesso ip, mi prendo la sua porta");
+                porta = node.getPort();
+                break;
+            }
+        }
+        
+        String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/offerWebService";
+        System.out.println("FRONTEND WebService --> " + s);
+        
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/offerWebService"
+            );
+        
+        String t = null;
+        
+        try{
+                t =  port.getTransaction(itemId);
+            }catch(Exception ex){
+                System.err.println("Errore di rete");
+            }
+        return t;
     }
 
     

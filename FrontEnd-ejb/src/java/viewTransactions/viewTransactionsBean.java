@@ -5,8 +5,12 @@
  */
 package viewTransactions;
 
+import java.util.Iterator;
 import javax.ejb.Stateless;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceRef;
+import netConf.NetworkConfigurator;
+import netConf.NetworkNode;
 import transaction.TransactionWebService_Service;
 
 /**
@@ -40,6 +44,34 @@ public class viewTransactionsBean implements viewTransactionsBeanLocal {
         //return port.selectTransactions();
         
         String result = null;
+        
+        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
+        bindingProvider = (BindingProvider) port;
+        //String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+NetworkConfigurator.getInstance(false).getMyself().getPort()+"/ReplicaManager-war/userWebService";
+;
+        //System.out.println("FRONTEND WebService --> " + s);
+        NetworkNode node;
+        int porta = 0;
+        for(Iterator i  = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); i.hasNext();){
+            System.out.println("Dentro for select bean FE");
+            node = (NetworkNode) i.next();
+            if(NetworkConfigurator.getInstance(false).getMyself().getIp().equals(node.getIp())){
+                System.out.println("Trovata replica che ha il mio stesso ip, mi prendo la sua porta");
+                porta = node.getPort();
+                break;
+            }
+        }
+        
+        String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/transactionWebService";
+        System.out.println("FRONTEND WebService --> " + s);
+        
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/transactionWebService"
+            );
+        
+        
+        
         
         try{
                 result = port.selectTransactions();
