@@ -21,14 +21,6 @@ public class paymentBean implements paymentBeanLocal {
 
     @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/payWebService.wsdl")
     private PayWebService_Service service;
-
-    //@WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/paymentWebService.wsdl")
-    //private PaymentWebService_Service service;
-    
-    
-    
-    
-    
     
     @Override
     public void paga(int user_id, int item_id){
@@ -71,15 +63,6 @@ public class paymentBean implements paymentBeanLocal {
         
     }
 
-    /*
-    private void doPayWebServ(int userId, int itemId) {
-        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
-        // If the calling of port operations may lead to race condition some synchronization is required.
-        payment.PayWebService port = service.getPayWebServicePort();
-        port.doPayWebServ(userId, itemId);
-    }
-
- */
 
     
 

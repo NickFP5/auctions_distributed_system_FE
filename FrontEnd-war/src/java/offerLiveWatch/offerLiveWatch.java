@@ -24,6 +24,10 @@ import resources.Transaction;
 /**
  *
  * @author alessandrotorcetta
+ * 
+ * class offerLiveWatch (Runnable):
+ *      thread che aggiorna un singolo utente in modo periodico dei rilanci sulle aste relative ad un item.
+ * 
  */
 public class offerLiveWatch implements Runnable {
 

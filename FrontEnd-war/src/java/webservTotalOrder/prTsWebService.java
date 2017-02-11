@@ -33,7 +33,9 @@ public class prTsWebService {
 
     
     /**
-     * This is a sample web service operation
+     * WebService prTsWebService, proposed(String):
+     *      Espone interfaccia di ricezione di messaggi PROPOSAL_TS secondo algoritmo ISIS.
+     *      Li passa alla classe totalOrderMulticastSender che fornisce eventualmente il messaggio di FINAL_TS da spedire.
      */
     @WebMethod(operationName = "proposed")
     public void proposed(@WebParam(name = "proposedTs") String proposedTs) {

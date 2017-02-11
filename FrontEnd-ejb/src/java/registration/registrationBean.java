@@ -32,31 +32,12 @@ public class registrationBean implements registrationBeanLocal {
     // "Insert Code > Add Business Method")
     
     
-    
-    
-    //modificare il void 
-    
-    
     @Override
     public void register(User u){
         
         System.out.println("Dentro register registerBean frontend");
         String result = insert(u.getEmail(), u.getName(),  u.getPassword());
         System.out.println("DOPO INSER REGBEAN ");
-        
-
-        /*
-        
-        JsonObject jo = Json.createReader(new StringReader(result)).readObject();
-        String email = (String) jo.getString("email");
-         
-        System.out.println("Valore email: " + email);
-     
-        if(email != null) return false;
-        
-        else return true;
-        //return false;
-        */
 
      }
 

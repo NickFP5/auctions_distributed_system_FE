@@ -16,166 +16,99 @@ import totalOrderReplicazione.totalOrderMulticastSender;
 /**
  *
  * @author alessandrotorcetta
+ * 
+ * offerBean: 
+ *      bean che coopera con il gestore di ISIS totalOrderMulticastSender per effettuare l'invio di messaggi REVISE_TS
+ *      in corrispondenza di offerte di rilanci da parte degli utenti per un particolare oggetto in asta.
  */
 @Stateless
 public class offerBean implements offerBeanLocal {
 
     @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl")
     private OfferWebService_Service service;
-    
-    
-    
-    @Override
-    //public String offerPrice(int itemId, float requestedPrice, int userId){
-    public void offerPrice(String offerMsg){   
-        
-        String tomm = totalOrderMulticastSender.getInstance().send(1, offerMsg);
-       
-        offer(tomm);
-        
-        // return "ciao";
-       
-        
-    }
-    
-    
-    
-    
-    
-    /*
-    @Override
-    public void offer(java.lang.String offerMsg) {
-        
-        offer.OfferWebService_Service service;
-        offer.OfferWebService port;
-        //port.offer(offerMsg);
-        
-        
-        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
-        
-        NetworkNode n;
-        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
-            n = (NetworkNode) it.next();
-            System.out.println("PORTA a cui invio -->" + n.getPort() + "  IP ---> " + n.getIp() + " nome --> " + n.getName());
-        }
-        
 
-        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
-            service = new offer.OfferWebService_Service();
-            port = service.getOfferWebServicePort();
-            bindingProvider = (BindingProvider) port;
-            n = (NetworkNode) it.next();
-            System.out.println("SIZE DEI REPLICA A CUI INVIARE --> " + NetworkConfigurator.getInstance(false).getReplicas().size());
-            
-            bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
-            );
-            System.out.println("Sono il SENDER, STO INVIANDO A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
-            port.offer(offerMsg);
-            
-        }
-        */
-        
-        /*
-        BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
-        bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                "http://87.17.110.210:8080/ReplicaManager-war/offerWebService"
-            );
-        System.out.println("Sono il SENDER, STO INVIANDO A ---> 87.17.110.210");
-        port.offer(offerMsg);
+    @Override
+    public void offerPrice(String offerMsg) {
+
+        String tomm = totalOrderMulticastSender.getInstance().send(1, offerMsg);
+
+        offer(tomm);
+
     }
-        */
 
     private void offer(java.lang.String offerMsg) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         offer.OfferWebService port = service.getOfferWebServicePort();
         //port.offer(offerMsg);
-        
-        
+
         BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
         bindingProvider = (BindingProvider) port;
 
-        for(Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();){
+        for (Iterator it = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); it.hasNext();) {
             NetworkNode n = (NetworkNode) it.next();
-            
+
             bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                "http://"+n.getIp()+":"+n.getPort()+"/ReplicaManager-war/offerWebService"
+                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                    "http://" + n.getIp() + ":" + n.getPort() + "/ReplicaManager-war/offerWebService"
             );
-            System.out.println("Sono il SENDER, STO INVIANDO " + offerMsg+ " A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
+            System.out.println("Sono il SENDER, STO INVIANDO " + offerMsg + " A ---> " + n.getIp() + " il suo nome è ---> " + n.getName());
             //port.offer(offerMsg);
-            
-            try{
+
+            try {
                 port.offer(offerMsg);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 System.err.println("Errore di rete");
             }
-            
+
         }
-        
-        
-        
+
     }
 
-    
-    
     @Override
-    public String findTransaction(int itemId){
-        
-       // return "ciao";
+    public String findTransaction(int itemId) {
+
         return getTransaction(itemId);
     }
-    
-    
-   
-
 
     private String getTransaction(int itemId) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         offer.OfferWebService port = service.getOfferWebServicePort();
-        
+
         //return port.getTransaction(itemId);
-        
         BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
         bindingProvider = (BindingProvider) port;
         //String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+NetworkConfigurator.getInstance(false).getMyself().getPort()+"/ReplicaManager-war/userWebService";
-;
         //System.out.println("FRONTEND WebService --> " + s);
         NetworkNode node;
         int porta = 0;
-        for(Iterator i  = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); i.hasNext();){
+        for (Iterator i = NetworkConfigurator.getInstance(false).getReplicas().listIterator(); i.hasNext();) {
             System.out.println("Dentro for select bean FE");
             node = (NetworkNode) i.next();
-            if(NetworkConfigurator.getInstance(false).getMyself().getIp().equals(node.getIp())){
+            if (NetworkConfigurator.getInstance(false).getMyself().getIp().equals(node.getIp())) {
                 System.out.println("Trovata replica che ha il mio stesso ip, mi prendo la sua porta");
                 porta = node.getPort();
                 break;
             }
         }
-        
-        String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/offerWebService";
+
+        String s = "http://" + NetworkConfigurator.getInstance(false).getMyself().getIp() + ":" + porta + "/ReplicaManager-war/offerWebService";
         System.out.println("FRONTEND WebService --> " + s);
-        
+
         bindingProvider.getRequestContext().put(
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+porta+"/ReplicaManager-war/offerWebService"
-            );
-        
+                "http://" + NetworkConfigurator.getInstance(false).getMyself().getIp() + ":" + porta + "/ReplicaManager-war/offerWebService"
+        );
+
         String t = null;
-        
-        try{
-                t =  port.getTransaction(itemId);
-            }catch(Exception ex){
-                System.err.println("Errore di rete");
-            }
+
+        try {
+            t = port.getTransaction(itemId);
+        } catch (Exception ex) {
+            System.err.println("Errore di rete");
+        }
         return t;
     }
 
-    
-    
 }

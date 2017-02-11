@@ -25,6 +25,12 @@ import totalOrderReplicazione.totalOrderMulticastSender;
 /**
  *
  * @author alessandrotorcetta
+ * 
+ * heartBeatReceiverWebService WebService:
+ *      riceve messaggi di HeartBeat secondo protocollo di fault detection eventually perfect.
+ *      Gli heartbeat signal ricevuti vengono processati per gestire gli insiemi di processi ALIVE e SUSPECTED.
+ *      Il webService interopera con il gestore dell'algoritmo ISIS per evitare situazioni di inconsistenza.
+ * 
  */
 @WebService(serviceName = "heartBeatReceiverWebService")
 public class heartBeatReceiverWebService {
@@ -72,7 +78,6 @@ public class heartBeatReceiverWebService {
         
         
     }
-    //-------> SONO ARRIVATO QUI
     /**
      * This is a sample web service operation
      */

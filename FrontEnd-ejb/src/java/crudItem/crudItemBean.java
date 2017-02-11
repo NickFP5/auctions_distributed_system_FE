@@ -25,6 +25,9 @@ import resources.Item;
 /**
  *
  * @author alessandrotorcetta
+ * 
+ * client del WebService itemWebService. Si interfaccia ad esso per operazioni CRUD.
+ * 
  */
 @Stateless
 public class crudItemBean implements crudItemBeanLocal {

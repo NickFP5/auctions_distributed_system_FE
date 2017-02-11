@@ -63,7 +63,6 @@ public class loginBean implements loginBeanLocal {
         BindingProvider bindingProvider; //classe che gestisce il cambio di indirizzo quando il webservice client deve riferirsi a webservice che stanno su macchine diverse
         bindingProvider = (BindingProvider) port;
         //String s = "http://"+NetworkConfigurator.getInstance(false).getMyself().getIp()+":"+NetworkConfigurator.getInstance(false).getMyself().getPort()+"/ReplicaManager-war/userWebService";
-;
         //System.out.println("FRONTEND WebService --> " + s);
         NetworkNode node;
         int porta = 0;
