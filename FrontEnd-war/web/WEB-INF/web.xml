@@ -53,4 +53,10 @@
         <local>offer.offerBeanLocal</local>
         <ejb-link>FrontEnd-ejb.jar#offerBean</ejb-link>
     </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>paymentBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>payment.paymentBeanLocal</local>
+        <ejb-link>FrontEnd-ejb.jar#paymentBean</ejb-link>
+    </ejb-local-ref>
 </web-app>

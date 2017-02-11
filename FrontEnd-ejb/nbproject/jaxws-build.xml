@@ -92,5 +92,22 @@
         <delete dir="${build.generated.dir}/jax-wsCache/offerWebService"/>
         <delete dir="${build.generated.sources.dir}/jax-ws/offer"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-userWebService, wsimport-client-itemWebService, wsimport-client-transactionWebService, wsimport-client-offerWebService"/>
+    <target name="wsimport-client-payWebService" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/payWebService"/>
+        <property name="wsdl-payWebService" location="${meta.inf}/xml-resources/web-service-references/payWebService/wsdl/localhost_8080/ReplicaManager-war/payWebService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/payWebService" destdir="${build.generated.dir}/jax-wsCache/payWebService" wsdl="${wsdl-payWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/ReplicaManager-war/payWebService?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-payWebService}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/payWebService"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/payWebService">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-payWebService" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/payWebService"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/payment"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-userWebService, wsimport-client-itemWebService, wsimport-client-transactionWebService, wsimport-client-offerWebService, wsimport-client-payWebService"/>
 </project>

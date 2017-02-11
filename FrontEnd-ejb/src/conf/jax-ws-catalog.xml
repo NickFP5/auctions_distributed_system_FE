@@ -8,4 +8,11 @@
     <system systemId="http://localhost:8080/ReplicaManager-war/transactionWebService?xsd=1" uri="wsdl/localhost_8080/ReplicaManager-war/transactionWebService.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/offerWebService?wsdl" uri="wsdl/localhost_8080/ReplicaManager-war/offerWebService.wsdl"/>
     <system systemId="http://localhost:8080/ReplicaManager-war/offerWebService?xsd=1" uri="wsdl/localhost_8080/ReplicaManager-war/offerWebService.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/paymentWebService?wsdl" uri="wsdl/localhost_8080/ReplicaManager-war/paymentWebService.wsdl"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/paymentWebService?xsd=1" uri="wsdl/localhost_8080/ReplicaManager-war/paymentWebService.xsd_1.xsd"/>
+    <system systemId="http://localhost:9100/ReplicaManager-war/paymentWebService?wsdl" uri="wsdl/localhost_9100/ReplicaManager-war/paymentWebService.wsdl"/>
+    <system systemId="http://localhost:9100/ReplicaManager-war/paymentWebService?xsd=1" uri="wsdl/localhost_9100/ReplicaManager-war/paymentWebService.xsd_1.xsd"/>
+    <system systemId="file:/Users/alessandrotorcetta/Desktop/progettoH_VM1/auctions_distributed_system_FE/dist/gfdeploy/FrontEnd/FrontEnd-ejb_jar/META-INF/xml-resources/web-service-references/paymentWebService/wsdl/localhost_9100/ReplicaManager-war/paymentWebService.wsdl" uri="wsdl/paymentWebService.wsdl"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/payWebService?wsdl" uri="wsdl/localhost_8080/ReplicaManager-war/payWebService.wsdl"/>
+    <system systemId="http://localhost:8080/ReplicaManager-war/payWebService?xsd=1" uri="wsdl/localhost_8080/ReplicaManager-war/payWebService.xsd_1.xsd"/>
 </catalog>

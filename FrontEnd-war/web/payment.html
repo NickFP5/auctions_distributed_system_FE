@@ -6,11 +6,117 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Payment Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Angular Material style sheet -->
+        <link rel="stylesheet" href="style/angular-material.min.css">
+        <link href="style/icon.css" rel="stylesheet">
+
+        <!-- Angular Material requires Angular.js Libraries -->
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/angular-animate.min.js"></script>
+        <script src="js/lib/angular-aria.min.js"></script>
+        <script src="js/lib/angular-messages.min.js"></script>
+
+        <!-- Angular Material Library -->
+        <script src="js/lib/angular-material.min.js"></script>
+
+        <!-- Code Behind -->
+        <script src="js/app/auctionsApp.module.js"></script>
+        <script src="js/app/auctionsCrud.controller.js"></script>
+        <script src="js/app/auctionsApp.config.js"></script>
+        
+        <script src="js/app/payment.controller.js"></script>
+        
+
     </head>
-    <body>
-        <div>TODO write content</div>
+    <body ng-app="auctionsApp" style="width:100%">
+        <div ng-controller="paymentController as ctrl">
+            <div layout="column" class="no-scroll">
+
+                <md-toolbar class="md-whiteframe-3dp">
+                    <div class="md-toolbar-tools" >
+                        <h2>
+                            <span>Auctions Distributed System - Pagano & Torcetta</span>
+
+                        </h2>
+                        <span flex></span>
+                        <!--
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0" ng-click="ctrl.deleteItems($event)" class="md-icon-button" aria-label="Delete">
+                            <md-icon> delete </md-icon>
+                        </md-button>
+                        <md-button ng-disabled="ctrl.selectedItem.length == 0 || ctrl.selectedItem.length > 1" ng-click="ctrl.updateItem($event)" class="md-icon-button" aria-label="Update">
+                            <md-icon> update </md-icon>
+                        </md-button> -->
+                    </div>
+                </md-toolbar>
+                <md-content class="no-scroll">
+                    <div>
+                        <div><h1>Payment page </h1></div> 
+                        <form novalidate class="simple-form"  name="addItemForm" style="width: 40%;">
+
+                            <md-input-container class="md-block">
+                                <label>User id:</label>
+                                <input type="number" ng-model="ctrl.userid" name="userid" required=""  /><br />
+                                <br />
+                                
+                            </md-input-container>
+                            
+                            
+                            <md-input-container class="md-block">
+                                <label>Item id:</label>
+                                <input type="number" ng-model="ctrl.itemid" name="itemid" required=""  /><br />
+                                <br />
+                                
+                            </md-input-container>
+                            
+                            
+                            
+                            <md-input-container class="md-block">
+                                <label>Make your payment:</label>
+                                
+                                <br />
+                                <br />
+                               
+                                
+                                <!-- <md-button class="md-fab md-primary md-hue-2" aria-label="Profile" ng-click=" ctrl.pay()"> -->
+                                <md-card style="height: 100px; width: 110px">
+                                    
+                                    <img src="img/master-card-logo.svg"  style="height: 100px; width: 110px" ng-click=" ctrl.pay()" class="md-card-image" alt="image caption">
+                                </md-card>
+                            <!--   </md-button> -->
+                            
+                            
+                                
+                                <br />
+                                <br />
+                                
+                                <md-card style="height: 100px; width: 110px">
+                                    
+                                    <img src="img/paypal-logo.svg"  style="height: 100px; width: 110px" ng-click=" ctrl.pay()" class="md-card-image" alt="image caption">
+                                </md-card>
+                                <br />
+                                <br />
+                                
+                                <md-card style="height: 100px; width: 110px">
+                                    
+                                    <img src="img/visa-pay-logo.svg"  style="height: 100px; width: 110px" ng-click=" ctrl.pay()" class="md-card-image" alt="image caption">
+                                </md-card>
+                                
+                                
+                                
+                         <!--  <img src="img/master-card-logo.svg" class="md-card-image" alt="image caption">  -->
+                            
+                                <br />
+                            </md-input-container>
+                            
+
+                        </form>
+                    </div>
+                </md-content>
+            </div>
+        </div>
     </body>
 </html>

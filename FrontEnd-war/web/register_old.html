@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+  <meta charset="utf-8" />
+  <title>WebSocket Test</title>
+  <script language="javascript" type="text/javascript">
+
+  var wsUri = "ws://" + window.location.host +"/FrontEnd-war/register";
+  var output;
+  var email, password;
+
+  function init()
+  {
+    output = document.getElementById("output");
+    email = document.getElementById("email");
+    password = document.getElementById("password");
+    
+    testWebSocket();
+  }
+
+  function testWebSocket()
+  {
+    websocket = new WebSocket(wsUri);
+    websocket.onopen = function(evt) { onOpen(evt) };
+    websocket.onclose = function(evt) { onClose(evt) };
+    websocket.onmessage = function(evt) { onMessage(evt) };
+    websocket.onerror = function(evt) { onError(evt) };
+  }
+
+  function onOpen(evt)
+  {
+    writeToScreen("CONNECTED");
+    //doSend("WebSocket rocks");
+  }
+
+  function onClose(evt)
+  {
+    window.location.href = '/FrontEnd-war/login.html';
+  }
+
+  function onMessage(evt)
+  {
+    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+   // if(evt.data === "OK") sessionStorage.setItem('email', email);
+    websocket.close();
+  }
+
+  function onError(evt)
+  {
+    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+  }
+
+  function doSend(message)
+  {
+    writeToScreen("SENT: " + message);
+    websocket.send(message);
+    
+    websocket.close();
+  }
+
+  function writeToScreen(message)
+  {
+    var pre = document.createElement("p");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = message;
+    output.appendChild(pre);
+  }
+  
+  function register(){
+      console.log("register");
+      
+      /*email = document.getElementById("email");
+      password = document.getElementById("password");*/
+        
+      var form = document.getElementById("registerform");
+      var email2 = form.elements["email"].value;
+      var password2 = form.elements["password"].value;
+      var name = form.elements["name"].value;
+      
+      console.log(email2);
+      console.log(password2);
+      
+      var user_credentials = {
+          email: email2,
+          name: name,
+          password: password2,
+          
+      };
+      
+      var signup_info = JSON.stringify(user_credentials);
+      
+      doSend(signup_info);
+  }
+  
+  function update_user_credentials(){
+     email = document.getElementById("email");
+      password = document.getElementById("password");
+  }
+
+  window.addEventListener("load", init, false);
+  
+  /*window.onload = function() {
+    document.getElementById('login').onclick = login;
+  }*/
+    
+   //document.getElementById('login').onclick = login();
+  
+  </script>
+
+  <h2>WebSocket Test</h2>
+  <form id='registerform'>
+      Email: <input type="text" name="email"><br>
+      Name: <input type="text" name='name'><br>
+      Password: <input type="password" name="password">
+      <input type="button" value="register" name="register2" onclick=register()>
+  </form>
+ 
+ <!-- <button onclick="login()">LOGIN</button> -->
+  
+  <div id="output"></div>

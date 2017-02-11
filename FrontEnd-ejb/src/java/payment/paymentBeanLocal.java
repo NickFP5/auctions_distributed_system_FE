@@ -13,5 +13,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface paymentBeanLocal {
+
+    public void paga(int user_id, int item_id);
     
 }
